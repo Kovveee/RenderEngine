@@ -10,9 +10,8 @@ public:
 	}
 };
 
-int main() {
-	Sandbox* sandbox = new Sandbox();
-	sandbox->Run();
-	delete sandbox;
-	return 0;
+
+RenderEngine::Application* RenderEngine::CreateApplication()
+{
+	return new Sandbox();
 }

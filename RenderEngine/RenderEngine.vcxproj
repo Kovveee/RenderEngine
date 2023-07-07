@@ -55,12 +55,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL;GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\vendor\GLFW\lib-vc2022;$(SolutionDir)RenderEngine\vendor\GLEW\lib\release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -69,22 +72,28 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL;GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\vendor\GLFW\lib-vc2022;$(SolutionDir)RenderEngine\vendor\GLEW\lib\release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderEngine\Renderer\Renderer.h" />
     <ClInclude Include="src\RenderEngine.h" />
     <ClInclude Include="src\RenderEngine\Application.h" />
     <ClInclude Include="src\RenderEngine\Core.h" />
+    <ClInclude Include="src\RenderEngine\EntryPoint.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RenderEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\RenderEngine\Application.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
