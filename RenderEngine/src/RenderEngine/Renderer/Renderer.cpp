@@ -7,7 +7,7 @@ namespace RenderEngine
 		if (!glfwInit())
 			return;
 		
-		m_window = glfwCreateWindow(640, 480, "Hello World!", NULL, NULL);
+		m_window = glfwCreateWindow(640, 700, "Hello World!", NULL, NULL);
 
 		if (!m_window) {
 			glfwTerminate();
