@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include "glm/common.hpp"
+
 namespace RenderEngine 
 {
 	Renderer::Renderer() : m_window(NULL)

@@ -57,7 +57,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL;GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLM\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -74,7 +74,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL;GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLM\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -86,15 +86,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderEngine\Renderer\ElementBuffer.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Renderer.h" />
     <ClInclude Include="src\RenderEngine.h" />
     <ClInclude Include="src\RenderEngine\Application.h" />
     <ClInclude Include="src\RenderEngine\Core.h" />
     <ClInclude Include="src\RenderEngine\EntryPoint.h" />
+    <ClInclude Include="src\RenderEngine\Renderer\Vertex.h" />
+    <ClInclude Include="src\RenderEngine\Renderer\VertexBuffer.h" />
+    <ClInclude Include="src\RenderEngine\Renderer\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RenderEngine\Renderer\ElementBuffer.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\RenderEngine\Application.cpp" />
+    <ClCompile Include="src\RenderEngine\Renderer\VertexBuffer.cpp" />
+    <ClCompile Include="src\RenderEngine\Renderer\VertexArray.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
