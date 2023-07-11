@@ -6,6 +6,7 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "ElementBuffer.h"
+#include "Shader.h"
 #include <string>
 #include <glm/glm.hpp>
 
@@ -22,15 +23,10 @@ namespace RenderEngine
 
 	private:
 		GLFWwindow* m_window;
-
 		VertexArray* vao;
 		VertexBuffer* vbo;
 		ElementBuffer* ibo;
-
-		GLuint shaderProgram = 0;
-		GLuint vertexShader = 0;
-		GLuint fragmentShader = 0;
-
+		Shader* shaderProgram;
 	};
 }
 

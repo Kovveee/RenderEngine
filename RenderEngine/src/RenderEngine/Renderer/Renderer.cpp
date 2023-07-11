@@ -4,7 +4,8 @@
 
 namespace RenderEngine
 {
-	Renderer::Renderer() : m_window(NULL)
+	Renderer::Renderer() 
+		: m_window(NULL)
 	{
 		if (!glfwInit())
 			return;
@@ -64,46 +65,7 @@ namespace RenderEngine
 		ibo->Unbind();
 		
 
-
-
-		std::string vertex_shader =
-			"#version 330 core\n" 
-			"\n"
-			"layout(location = 0) in vec3 Position;\n" 
-			"layout(location = 1) in vec3 Color;\n" 
-			"void main(){\n" 
-			"gl_Position = vec4(Position,1.0);\n"
-			"}\n";
-
-		const char* vertexsrc = vertex_shader.c_str();
-
-		std::string fragment_shader =
-			"#version 330 core\n"
-			"\n"
-			"out vec4 color;"
-			"\n"
-			"void main()\n"
-			"{\n"
-			"color = vec4(1.0,0.0,0.0,1.0);\n"
-			"}\n";
-
-		const char* fragmentsrc = fragment_shader.c_str();
-
-		vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertexShader, 1, &vertexsrc, NULL);
-		glCompileShader(vertexShader);
-
-		fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragmentShader, 1,&fragmentsrc, NULL);
-		glCompileShader(fragmentShader);
-
-		shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vertexShader);
-		glAttachShader(shaderProgram, fragmentShader);
-		glLinkProgram(shaderProgram);
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
-
+		shaderProgram = new Shader("C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\vShader.vert", "C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\fShader.frag");
 	}
 
 
@@ -114,7 +76,7 @@ namespace RenderEngine
 			glClearColor(0.2f, 0.4f, 0.2f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glUseProgram(shaderProgram);
+			shaderProgram->UseProgram();
 			vao->Bind();
 			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
 			vao->Unbind();

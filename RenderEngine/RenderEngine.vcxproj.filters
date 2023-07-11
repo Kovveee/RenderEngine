@@ -42,6 +42,9 @@
     <ClInclude Include="src\RenderEngine\Renderer\VertexArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Application.cpp">
@@ -59,5 +62,12 @@
     <ClCompile Include="src\RenderEngine\Renderer\VertexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderEngine\Renderer\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />
+    <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />
   </ItemGroup>
 </Project>
