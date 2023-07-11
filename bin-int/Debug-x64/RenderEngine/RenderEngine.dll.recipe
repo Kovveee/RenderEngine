@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\dev\RenderEngine\bin\Debug-x64\RenderEngine\RenderEngine.dll</FullPath>
+      <FullPath>C:\dev\RenderEngine\RenderEngine\bin\Debug-x64\RenderEngine\RenderEngine.dll</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
