@@ -15,7 +15,7 @@ namespace RenderEngine
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		m_window = glfwCreateWindow(640, 700, "Hello World!", NULL, NULL);
+		m_window = glfwCreateWindow(screenWidth, screenHeight, "Hello World!", NULL, NULL);
 
 		if (!m_window) {
 			glfwTerminate();
@@ -67,6 +67,12 @@ namespace RenderEngine
 
 		shaderProgram = new Shader("C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\vShader.vert", "C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\fShader.frag");
 		shaderProgram->InitUniformVariable("colorChange");
+
+
+		triangleModel = glm::rotate(triangleModel, glm::radians(-55.0f), glm::vec3(1.f, 0.f, 0.f));
+		view = glm::translate(view, glm::vec3(0.f, 0.f, -3.f));
+		projection = glm::perspective(glm::radians(45.f), screenWidth / screenHeight, 0.1f, 100.f);
+
 	}
 
 
@@ -80,6 +86,7 @@ namespace RenderEngine
 			shaderProgram->UseProgram();
 			vao->Bind();
 			shaderProgram->setUniform<glm::vec3>("colorChange", color);
+			shaderProgram->setWVP(triangleModel, view, projection);
 			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
 			vao->Unbind();
 

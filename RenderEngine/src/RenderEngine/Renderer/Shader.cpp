@@ -32,8 +32,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	const char* vShaderCode = vertexCode.c_str();
 	const char* fShaderCode = fragmentCode.c_str();
 
-	
-
 	// Creating the shader program / compiling shaders
 
 	GLuint vertex, fragment;
@@ -77,6 +75,9 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
 
+	InitUniformVariable("worldMat");
+	InitUniformVariable("viewMat");
+	InitUniformVariable("projMat");
 }
 Shader::~Shader() 
 {
@@ -107,4 +108,16 @@ template<>
 void Shader::setUniform<glm::vec4>(const char* name, glm::vec4 value)
 {
 	glUniform4f(m_uniforms[name], value.x, value.y, value.z, value.w);
+}
+template<>
+void Shader::setUniform<glm::mat4>(const char* name, glm::mat4 value)
+{
+	glUniformMatrix4fv(m_uniforms[name], 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void Shader::setWVP(glm::mat4 worldMat, glm::mat4 viewMat, glm::mat4 projMat)
+{
+	glUniformMatrix4fv(m_uniforms["worldMat"], 1, GL_FALSE, glm::value_ptr(worldMat));
+	glUniformMatrix4fv(m_uniforms["viewMat"], 1, GL_FALSE, glm::value_ptr(viewMat));
+	glUniformMatrix4fv(m_uniforms["projMat"], 1, GL_FALSE, glm::value_ptr(projMat));
 }

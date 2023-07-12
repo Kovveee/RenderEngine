@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include <string>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 namespace RenderEngine 
@@ -28,6 +29,13 @@ namespace RenderEngine
 		ElementBuffer* ibo;
 		Shader* shaderProgram;
 		glm::vec3 color = glm::vec3(0.f,0.f,0.f);
+
+		const float screenWidth = 800.f;
+		const float screenHeight = 600.f;
+
+		glm::mat4 triangleModel = glm::mat4(1.f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
 	};
 }
 
