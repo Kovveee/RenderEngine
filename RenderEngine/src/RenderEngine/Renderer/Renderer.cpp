@@ -73,9 +73,10 @@ namespace RenderEngine
 	void Renderer::DrawCube() {
 		cubeVao->Bind();
 		shaderProgram->UseProgram();
-		glm::mat4 tempCubeWorld = cubeWorld;
+		glm::mat4 tempCubeWorld;
 		float angle = 0;
 		for (int i = 0; i < 5; ++i) {
+			tempCubeWorld = cubeWorld;
 			tempCubeWorld = glm::rotate(tempCubeWorld,glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
 			shaderProgram->setWVP(tempCubeWorld, view, projection);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
