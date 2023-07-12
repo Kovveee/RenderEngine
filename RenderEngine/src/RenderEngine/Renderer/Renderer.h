@@ -21,6 +21,8 @@ namespace RenderEngine
 		~Renderer();
 		void Init();
 		void Render();
+		void InitCube();
+		void DrawCube();
 
 	private:
 		GLFWwindow* m_window;
@@ -36,6 +38,11 @@ namespace RenderEngine
 		glm::mat4 triangleModel = glm::mat4(1.f);
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
+
+		glm::mat4 cubeWorld = glm::mat4(1.f);
+		VertexArray* cubeVao;
+		VertexBuffer* cubeVbo;
+		ElementBuffer* cubeIbo;
 	};
 }
 

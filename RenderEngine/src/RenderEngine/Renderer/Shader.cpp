@@ -86,6 +86,10 @@ void Shader::UseProgram()
 {
 	glUseProgram(m_programID);
 }
+void Shader::UnuseProgram()
+{
+	glUseProgram(0);
+}
 void Shader::InitUniformVariable(const char* name) {
 	m_uniforms[name] = glGetUniformLocation(m_programID, name);
 }

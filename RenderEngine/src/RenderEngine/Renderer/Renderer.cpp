@@ -35,6 +35,67 @@ namespace RenderEngine
 		
 	}
 
+
+	void Renderer::InitCube() 
+	{
+		Vertex vertices[] =
+		{
+			{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), glm::vec2(0.f, 0.f)},
+			{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), glm::vec2(0.f, 0.f)},
+			{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), glm::vec2(0.f, 0.f)},
+			{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), glm::vec2(0.f, 0.f)}
+		};
+
+		const unsigned int indices[] =
+		{
+			0,1,3,
+			3,2,0
+		};
+
+		cubeVao = new VertexArray();
+		cubeVao->Bind();
+
+		cubeVbo = new VertexBuffer(4, vertices);
+		cubeVbo->Bind();
+
+		cubeIbo = new ElementBuffer(6, indices);
+		cubeIbo->Bind();
+
+		cubeVao->InitVertexArray();
+
+		cubeVao->Unbind();
+		cubeIbo->Unbind();
+		cubeVbo->Unbind();
+
+
+		
+	}
+	void Renderer::DrawCube() {
+		cubeVao->Bind();
+		shaderProgram->UseProgram();
+		glm::mat4 tempCubeWorld = cubeWorld;
+		float angle = 0;
+		for (int i = 0; i < 5; ++i) {
+			tempCubeWorld = glm::rotate(tempCubeWorld,glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
+			shaderProgram->setWVP(tempCubeWorld, view, projection);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+			angle += 90;
+		}
+		
+		tempCubeWorld = cubeWorld;
+		tempCubeWorld = glm::rotate(tempCubeWorld, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+		shaderProgram->setWVP(tempCubeWorld, view, projection);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+		tempCubeWorld = cubeWorld;
+		tempCubeWorld = glm::rotate(tempCubeWorld, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
+		shaderProgram->setWVP(tempCubeWorld, view, projection);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+
+
+		shaderProgram->UnuseProgram();
+		cubeVao->Unbind();
+	}
+
 	void Renderer::Init()
 	{
 		Vertex vertices[] =
@@ -73,6 +134,8 @@ namespace RenderEngine
 		view = glm::translate(view, glm::vec3(0.f, 0.f, -3.f));
 		projection = glm::perspective(glm::radians(45.f), screenWidth / screenHeight, 0.1f, 100.f);
 
+		InitCube();
+
 	}
 
 
@@ -83,25 +146,7 @@ namespace RenderEngine
 			glClearColor(0.2f, 0.4f, 0.2f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			shaderProgram->UseProgram();
-			vao->Bind();
-			shaderProgram->setUniform<glm::vec3>("colorChange", color);
-			shaderProgram->setWVP(triangleModel, view, projection);
-			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
-			vao->Unbind();
-
-			color.x += 0.001f;
-			color.y += 0.001f;
-			color.z += 0.001f;
-			if (color.x > 1.f) {
-				color.x = 0.f;
-			}
-			if (color.y > 1.f) {
-				color.y = 0.f;
-			}
-			if (color.z > 1.f) {
-				color.z = 0.f;
-			}
+			DrawCube();
 
 			glfwSwapBuffers(m_window);
 

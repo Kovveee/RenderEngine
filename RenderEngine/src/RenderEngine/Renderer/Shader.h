@@ -16,6 +16,7 @@ public:
 	Shader(const char* vertexPath, const char* fragmentPath);
 	~Shader();
 	void UseProgram();
+	void UnuseProgram();
 
 	void InitUniformVariable(const char* name);
 	template<typename T>
