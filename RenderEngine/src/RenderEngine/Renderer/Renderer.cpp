@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+
 namespace RenderEngine
 {
 	Renderer::Renderer() 
@@ -63,9 +64,9 @@ namespace RenderEngine
 		vao->Unbind();
 		vbo->Unbind();
 		ibo->Unbind();
-		
 
 		shaderProgram = new Shader("C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\vShader.vert", "C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\fShader.frag");
+		shaderProgram->InitUniformVariable("colorChange");
 	}
 
 
@@ -78,8 +79,22 @@ namespace RenderEngine
 
 			shaderProgram->UseProgram();
 			vao->Bind();
+			shaderProgram->setUniform<glm::vec3>("colorChange", color);
 			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
 			vao->Unbind();
+
+			color.x += 0.001f;
+			color.y += 0.001f;
+			color.z += 0.001f;
+			if (color.x > 1.f) {
+				color.x = 0.f;
+			}
+			if (color.y > 1.f) {
+				color.y = 0.f;
+			}
+			if (color.z > 1.f) {
+				color.z = 0.f;
+			}
 
 			glfwSwapBuffers(m_window);
 

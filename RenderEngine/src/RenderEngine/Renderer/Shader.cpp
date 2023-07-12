@@ -85,4 +85,26 @@ void Shader::UseProgram()
 {
 	glUseProgram(m_programID);
 }
-
+void Shader::InitUniformVariable(const char* name) {
+	m_uniforms[name] = glGetUniformLocation(m_programID, name);
+}
+template<typename T>
+void Shader::setUniform(const char* name, T value) 
+{
+	std::runtime_error(false);
+}
+template<>
+void Shader::setUniform<glm::vec2>(const char* name, glm::vec2 value)
+{
+	glUniform2f(m_uniforms[name], value.x, value.y);
+}
+template<>
+void Shader::setUniform<glm::vec3>(const char* name, glm::vec3 value) 
+{
+	glUniform3f(m_uniforms[name], value.x, value.y, value.z);
+}
+template<>
+void Shader::setUniform<glm::vec4>(const char* name, glm::vec4 value)
+{
+	glUniform4f(m_uniforms[name], value.x, value.y, value.z, value.w);
+}

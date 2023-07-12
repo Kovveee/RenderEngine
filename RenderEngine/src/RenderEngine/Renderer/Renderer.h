@@ -27,6 +27,7 @@ namespace RenderEngine
 		VertexBuffer* vbo;
 		ElementBuffer* ibo;
 		Shader* shaderProgram;
+		glm::vec3 color = glm::vec3(0.f,0.f,0.f);
 	};
 }
 
