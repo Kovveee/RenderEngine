@@ -140,6 +140,8 @@ namespace RenderEngine
 
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
+
 	}
 
 
@@ -156,7 +158,9 @@ namespace RenderEngine
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-			view = glm::lookAt(cameraPos, cameraPos + cameraFront, camerUp);
+			camera->Update(m_window, deltaTime);
+
+			view = camera->GetLookAt();
 
 			DrawCube();
 
@@ -173,56 +177,9 @@ namespace RenderEngine
 	}
 	void Renderer::KeyboardInputHandler()
 	{
-		const float cameraSpeed = 2.5f *deltaTime;
-		if(glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
-		{
-			cameraPos += cameraSpeed * cameraFront;
-		}
-		if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
-		{
-			cameraPos -= cameraSpeed * cameraFront;
-		}
-		if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
-		{
-			cameraPos +=  glm::normalize(glm::cross(cameraFront, camerUp)) * cameraSpeed;
-		}
-		if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
-		{
-			cameraPos -= glm::normalize(glm::cross(cameraFront, camerUp)) * cameraSpeed;
-		}
+		
 	}
-	void Renderer::MouseInputHandler() 
+	void Renderer::MouseInputHandler()
 	{
-		double xpos, ypos;
-		glfwGetCursorPos(m_window, &xpos, &ypos);
-		if (firstMouse) 
-		{
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
-		}
-
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos;
-		lastX = xpos;
-		lastY = ypos;
-
-		float sensitivity = 0.01f;
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
-
-		yaw += xoffset;
-		pitch += yoffset;
-
-		if (pitch > 89.f) 
-			pitch = 89.f;
-		if (pitch < -89.f)
-			pitch = -89.f;
-
-		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		cameraFront = glm::normalize(direction);
-
 	}
 }

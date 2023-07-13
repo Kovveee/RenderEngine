@@ -45,6 +45,9 @@
     <ClInclude Include="src\RenderEngine\Renderer\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Application.cpp">
@@ -63,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RenderEngine\Renderer\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderEngine\Renderer\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

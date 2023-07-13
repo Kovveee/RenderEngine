@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderEngine\Renderer\Camera.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Shader.h" />
     <ClInclude Include="src\RenderEngine\Renderer\ElementBuffer.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Renderer.h" />
@@ -98,6 +99,7 @@
     <ClInclude Include="src\RenderEngine\Renderer\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RenderEngine\Renderer\Camera.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Shader.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\ElementBuffer.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Renderer.cpp" />
