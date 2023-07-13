@@ -3,9 +3,10 @@
 #include <iostream>
 
 
+
 namespace RenderEngine
 {
-	Renderer::Renderer() 
+	Renderer::Renderer()
 		: m_window(NULL)
 	{
 		if (!glfwInit())
@@ -32,11 +33,11 @@ namespace RenderEngine
 
 	Renderer::~Renderer()
 	{
-		
+
 	}
 
 
-	void Renderer::InitCube() 
+	void Renderer::InitCube()
 	{
 		Vertex vertices[] =
 		{
@@ -68,7 +69,7 @@ namespace RenderEngine
 		cubeVbo->Unbind();
 
 
-		
+
 	}
 	void Renderer::DrawCube() {
 		cubeVao->Bind();
@@ -77,12 +78,12 @@ namespace RenderEngine
 		float angle = 0;
 		for (int i = 0; i < 5; ++i) {
 			tempCubeWorld = cubeWorld;
-			tempCubeWorld = glm::rotate(tempCubeWorld,glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
+			tempCubeWorld = glm::rotate(tempCubeWorld, glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
 			shaderProgram->setWVP(tempCubeWorld, view, projection);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 			angle += 90;
 		}
-		
+
 		tempCubeWorld = cubeWorld;
 		tempCubeWorld = glm::rotate(tempCubeWorld, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 		shaderProgram->setWVP(tempCubeWorld, view, projection);
@@ -110,7 +111,7 @@ namespace RenderEngine
 		{
 			0,1,2
 		};
-		
+
 		vao = new VertexArray();
 		vao->Bind();
 
@@ -122,7 +123,7 @@ namespace RenderEngine
 
 		vao->InitVertexArray();
 
-		
+
 		vao->Unbind();
 		vbo->Unbind();
 		ibo->Unbind();
@@ -137,26 +138,91 @@ namespace RenderEngine
 
 		InitCube();
 
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	}
 
 
-	void Renderer::Render() 
+	void Renderer::Render()
 	{
-		while (!glfwWindowShouldClose(m_window)) 
+		while (!glfwWindowShouldClose(m_window))
 		{
 			glClearColor(0.2f, 0.4f, 0.2f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+
+
+			float currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			view = glm::lookAt(cameraPos, cameraPos + cameraFront, camerUp);
 
 			DrawCube();
 
 			glfwSwapBuffers(m_window);
 
 			glfwPollEvents();
+			KeyboardInputHandler();
+			MouseInputHandler();
 		}
 
 		glfwTerminate();
 
 		return;
 	}
+	void Renderer::KeyboardInputHandler()
+	{
+		const float cameraSpeed = 2.5f *deltaTime;
+		if(glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			cameraPos += cameraSpeed * cameraFront;
+		}
+		if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			cameraPos -= cameraSpeed * cameraFront;
+		}
+		if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
+		{
+			cameraPos +=  glm::normalize(glm::cross(cameraFront, camerUp)) * cameraSpeed;
+		}
+		if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
+		{
+			cameraPos -= glm::normalize(glm::cross(cameraFront, camerUp)) * cameraSpeed;
+		}
+	}
+	void Renderer::MouseInputHandler() 
+	{
+		double xpos, ypos;
+		glfwGetCursorPos(m_window, &xpos, &ypos);
+		if (firstMouse) 
+		{
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
 
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos;
+		lastX = xpos;
+		lastY = ypos;
+
+		float sensitivity = 0.01f;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		yaw += xoffset;
+		pitch += yoffset;
+
+		if (pitch > 89.f) 
+			pitch = 89.f;
+		if (pitch < -89.f)
+			pitch = -89.f;
+
+		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+		direction.y = sin(glm::radians(pitch));
+		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+		cameraFront = glm::normalize(direction);
+
+	}
 }

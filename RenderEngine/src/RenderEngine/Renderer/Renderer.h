@@ -14,6 +14,7 @@
 
 namespace RenderEngine 
 {
+
 	class Renderer
 	{
 	public:
@@ -23,6 +24,8 @@ namespace RenderEngine
 		void Render();
 		void InitCube();
 		void DrawCube();
+		void KeyboardInputHandler();
+		void MouseInputHandler();
 
 	private:
 		GLFWwindow* m_window;
@@ -43,6 +46,21 @@ namespace RenderEngine
 		VertexArray* cubeVao;
 		VertexBuffer* cubeVbo;
 		ElementBuffer* cubeIbo;
+
+		glm::vec3 cameraPos = glm::vec3(0.f, 0.f, 3.f);
+		glm::vec3 cameraFront = glm::vec3(0.f, 0.f, -1.f);
+		glm::vec3 camerUp = glm::vec3(0.f, 1.f, 0.f);
+
+		glm::vec3 direction = glm::vec3(1);
+		float lastX = 400, lastY = 300;
+		bool firstMouse = true;
+
+		float yaw = -90.f;
+		float pitch;
+
+		float deltaTime = 0;
+		float lastFrame = 0;
+
 	};
 }
 
