@@ -5,7 +5,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // TO DO:  Make it better
-const float YAW;
+const float YAW = -90.f;
+const float PITCH = 0.f;
+const float SENSITIVITY = 0.05f;
+const float SPEED = 2.5f;
+const glm::vec3 CAMERAPOS = glm::vec3(0.0f, 0.0f, 3.0f);
+const glm::vec3 CAMERAFRONT = glm::vec3(0.0f, 0.0f, -1.0f);
+const glm::vec3 CAMERUP = glm::vec3(0.0f, 1.0f, 0.0f);
 
 class Camera
 {
@@ -24,7 +30,10 @@ private:
 	float m_pitch;
 	float m_sensitivity;
 	float m_speed;
+	bool m_firstMove;
 
+	void MouseInputHandler(GLFWwindow* window);
+	void KeyboardInputHandler(GLFWwindow* window, float deltaTime);
 
 };
 
