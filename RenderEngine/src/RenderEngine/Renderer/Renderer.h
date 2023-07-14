@@ -10,6 +10,7 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 #include "Camera.h"
 
 
@@ -30,11 +31,8 @@ namespace RenderEngine
 
 	private:
 		GLFWwindow* m_window;
-		VertexArray* vao;
-		VertexBuffer* vbo;
-		ElementBuffer* ibo;
+
 		Shader* shaderProgram;
-		glm::vec3 color = glm::vec3(0.f,0.f,0.f);
 
 		const float screenWidth = 800.f;
 		const float screenHeight = 600.f;

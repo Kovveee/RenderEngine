@@ -16,7 +16,7 @@ namespace RenderEngine
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		m_window = glfwCreateWindow(screenWidth, screenHeight, "Hello World!", NULL, NULL);
+		m_window = glfwCreateWindow(screenWidth, screenHeight, "Main Window", NULL, NULL);
 
 		if (!m_window) {
 			glfwTerminate();
@@ -75,21 +75,31 @@ namespace RenderEngine
 		cubeVao->Bind();
 		shaderProgram->UseProgram();
 		glm::mat4 tempCubeWorld;
+		glm::vec3 pos;
 		float angle = 0;
-		for (int i = 0; i < 5; ++i) {
+		for (int i = 0; i < 4; ++i) {
+			if (i == 0)
+				pos = glm::vec3(0.f, 0.f, 0.5f);
+			else if(i == 1)
+				pos = glm::vec3(0.5f, 0.f, 0.f);
+			else if (i == 2)
+				pos = glm::vec3(0.f, 0.f, -0.5f);
+			else if (i == 3)
+				pos = glm::vec3(-0.5f, 0.f, 0.f);
 			tempCubeWorld = cubeWorld;
-			tempCubeWorld = glm::rotate(tempCubeWorld, glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
+			std::cout << pos.x << std::endl;
+			tempCubeWorld *= glm::translate(pos) * glm::rotate<float>(glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
 			shaderProgram->setWVP(tempCubeWorld, view, projection);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 			angle += 90;
 		}
 
 		tempCubeWorld = cubeWorld;
-		tempCubeWorld = glm::rotate(tempCubeWorld, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+		tempCubeWorld *= glm::translate(glm::vec3(0.f, -0.5f, 0.f)) * glm::rotate<float>(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 		shaderProgram->setWVP(tempCubeWorld, view, projection);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 		tempCubeWorld = cubeWorld;
-		tempCubeWorld = glm::rotate(tempCubeWorld, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
+		tempCubeWorld *= glm::translate(glm::vec3(0.f, 0.5f, 0.f)) * glm::rotate<float>(glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
 		shaderProgram->setWVP(tempCubeWorld, view, projection);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
@@ -100,47 +110,13 @@ namespace RenderEngine
 
 	void Renderer::Init()
 	{
-		Vertex vertices[] =
-		{
-			{glm::vec3(-0.5f, -0.5f, 0.0f),	glm::vec3(1.0f, 0.f, 0.f),	glm::vec2(0,0)},
-			{glm::vec3(0.5f, -0.5f, 0.0f),	glm::vec3(0.f, 1.0f, 0.f),	glm::vec2(0,0)},
-			{glm::vec3(0.0f, 0.5f, 0.0f),		glm::vec3(0.f, 0.f, 1.0f),	glm::vec2(0,0)}
-		};
-
-		const unsigned int indices[] =
-		{
-			0,1,2
-		};
-
-		vao = new VertexArray();
-		vao->Bind();
-
-		vbo = new VertexBuffer(3, vertices);
-		vbo->Bind();
-
-		ibo = new ElementBuffer(3, indices);
-		ibo->Bind();
-
-		vao->InitVertexArray();
-
-
-		vao->Unbind();
-		vbo->Unbind();
-		ibo->Unbind();
-
 		shaderProgram = new Shader("C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\vShader.vert", "C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\fShader.frag");
-		shaderProgram->InitUniformVariable("colorChange");
 
-
-		triangleModel = glm::rotate(triangleModel, glm::radians(-55.0f), glm::vec3(1.f, 0.f, 0.f));
-		view = glm::translate(view, glm::vec3(0.f, 0.f, -3.f));
 		projection = glm::perspective(glm::radians(45.f), screenWidth / screenHeight, 0.1f, 100.f);
 
 		InitCube();
 
-
 		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
-
 	}
 
 
@@ -151,6 +127,8 @@ namespace RenderEngine
 			glClearColor(0.2f, 0.4f, 0.2f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
 
 
 			float currentFrame = glfwGetTime();
