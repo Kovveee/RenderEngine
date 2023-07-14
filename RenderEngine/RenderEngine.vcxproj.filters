@@ -75,5 +75,7 @@
   <ItemGroup>
     <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\lightShader.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\lightShader.vert" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #version 330
 
 in vec3 Position;
+in vec3 Color;
 
 uniform mat4 worldMat;
 uniform mat4 viewMat;

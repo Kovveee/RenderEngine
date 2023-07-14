@@ -71,9 +71,9 @@ namespace RenderEngine
 
 
 	}
-	void Renderer::DrawCube() {
+	void Renderer::DrawCube(glm::mat4 worldMat, Shader* shader) {
 		cubeVao->Bind();
-		shaderProgram->UseProgram();
+		shader->UseProgram();
 		glm::mat4 tempCubeWorld;
 		glm::vec3 pos;
 		float angle = 0;
@@ -86,37 +86,47 @@ namespace RenderEngine
 				pos = glm::vec3(0.f, 0.f, -0.5f);
 			else if (i == 3)
 				pos = glm::vec3(-0.5f, 0.f, 0.f);
-			tempCubeWorld = cubeWorld;
-			std::cout << pos.x << std::endl;
+			tempCubeWorld = worldMat;
 			tempCubeWorld *= glm::translate(pos) * glm::rotate<float>(glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
 			shaderProgram->setWVP(tempCubeWorld, view, projection);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 			angle += 90;
 		}
 
-		tempCubeWorld = cubeWorld;
+		tempCubeWorld = worldMat;
 		tempCubeWorld *= glm::translate(glm::vec3(0.f, -0.5f, 0.f)) * glm::rotate<float>(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 		shaderProgram->setWVP(tempCubeWorld, view, projection);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-		tempCubeWorld = cubeWorld;
+		tempCubeWorld = worldMat;
 		tempCubeWorld *= glm::translate(glm::vec3(0.f, 0.5f, 0.f)) * glm::rotate<float>(glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
 		shaderProgram->setWVP(tempCubeWorld, view, projection);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
 
-		shaderProgram->UnuseProgram();
+		shader->UnuseProgram();
 		cubeVao->Unbind();
 	}
 
 	void Renderer::Init()
 	{
 		shaderProgram = new Shader("C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\vShader.vert", "C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\fShader.frag");
+		shaderProgram->UseProgram();
+		shaderProgram->InitUniformVariable("objectColor");
+		shaderProgram->setUniform("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+		shaderProgram->InitUniformVariable("lightColor");
+		shaderProgram->setUniform("lightColor", glm::vec3(1.0f, 1.f, 1.f));
+		shaderProgram->UnuseProgram();
+
+		lightShaderProgram = new Shader("C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\lightShader.vert", "C:\\dev\\RenderEngine\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\lightShader.frag");
+
 
 		projection = glm::perspective(glm::radians(45.f), screenWidth / screenHeight, 0.1f, 100.f);
 
 		InitCube();
 
 		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
+
+		lightWorld *= glm::translate(lightPos) * glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
 	}
 
 
@@ -124,12 +134,13 @@ namespace RenderEngine
 	{
 		while (!glfwWindowShouldClose(m_window))
 		{
-			glClearColor(0.2f, 0.4f, 0.2f, 1.0f);
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_CULL_FACE);
 			glCullFace(GL_BACK);
 
+			
 
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
@@ -139,7 +150,8 @@ namespace RenderEngine
 
 			view = camera->GetLookAt();
 
-			DrawCube();
+			DrawCube(cubeWorld, shaderProgram);
+			DrawCube(lightWorld, lightShaderProgram);
 
 			glfwSwapBuffers(m_window);
 
