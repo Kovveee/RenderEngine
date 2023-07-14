@@ -41,10 +41,10 @@ namespace RenderEngine
 	{
 		Vertex vertices[] =
 		{
-			{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), glm::vec2(0.f, 0.f)},
-			{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), glm::vec2(0.f, 0.f)},
-			{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), glm::vec2(0.f, 0.f)},
-			{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), glm::vec2(0.f, 0.f)}
+			{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, //0
+			{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 0.f)},//1
+			{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, //2
+			{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, //3
 		};
 
 		const unsigned int indices[] =
@@ -56,10 +56,10 @@ namespace RenderEngine
 		cubeVao = new VertexArray();
 		cubeVao->Bind();
 
-		cubeVbo = new VertexBuffer(4, vertices);
+		cubeVbo = new VertexBuffer(8, vertices);
 		cubeVbo->Bind();
 
-		cubeIbo = new ElementBuffer(6, indices);
+		cubeIbo = new ElementBuffer(36, indices);
 		cubeIbo->Bind();
 
 		cubeVao->InitVertexArray();
@@ -89,6 +89,8 @@ namespace RenderEngine
 			tempCubeWorld = worldMat;
 			tempCubeWorld *= glm::translate(pos) * glm::rotate<float>(glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
 			shaderProgram->setWVP(tempCubeWorld, view, projection);
+			shaderProgram->setUniform("worldIT", glm::inverse(glm::transpose(tempCubeWorld)));
+			shaderProgram->setUniform("lightPos", lightPos);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 			angle += 90;
 		}
@@ -96,10 +98,14 @@ namespace RenderEngine
 		tempCubeWorld = worldMat;
 		tempCubeWorld *= glm::translate(glm::vec3(0.f, -0.5f, 0.f)) * glm::rotate<float>(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 		shaderProgram->setWVP(tempCubeWorld, view, projection);
+		shaderProgram->setUniform("worldIT", glm::inverse(glm::transpose(tempCubeWorld)));
+		shaderProgram->setUniform("lightPos", lightPos);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 		tempCubeWorld = worldMat;
 		tempCubeWorld *= glm::translate(glm::vec3(0.f, 0.5f, 0.f)) * glm::rotate<float>(glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
 		shaderProgram->setWVP(tempCubeWorld, view, projection);
+		shaderProgram->setUniform("worldIT", glm::inverse(glm::transpose(tempCubeWorld)));
+		shaderProgram->setUniform("lightPos", lightPos);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
 

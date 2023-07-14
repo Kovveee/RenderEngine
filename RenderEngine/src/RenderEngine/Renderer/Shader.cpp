@@ -78,6 +78,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	InitUniformVariable("worldMat");
 	InitUniformVariable("viewMat");
 	InitUniformVariable("projMat");
+	InitUniformVariable("worldIT");
+	InitUniformVariable("lightPos");
 }
 Shader::~Shader() 
 {
