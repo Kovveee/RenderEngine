@@ -1,7 +1,7 @@
 #version 330
 
-layout (location = 0) in vec3 Position;
-layout (location = 1) in vec3 Normals;
+in vec3 Position;
+in vec3 Normals;
 
 uniform mat4 worldMat;
 uniform mat4 viewMat;
@@ -14,6 +14,7 @@ out vec3 vs_out_FragPos;
 void main()
 {
 	gl_Position = projMat * viewMat * worldMat * vec4(Position,1.0);
-	vs_out_norm = (worldIt * vec4(Normals, 1.0)).xyz;
+	//vs_out_norm = (worldIt * vec4(Normals, 1.0)).xyz;
+	vs_out_norm = Normals;
 	vs_out_FragPos = vec3(worldMat * vec4(Position,1.0));
 }
