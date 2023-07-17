@@ -65,6 +65,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\vendor\GLFW\lib-vc2022;$(SolutionDir)RenderEngine\vendor\GLEW\lib\release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)bin\Debug-x64\RenderEngine\RenderEngine.dll" "$(SolutionDir)bin\Debug-x64\Sandbox" </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

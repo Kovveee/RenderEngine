@@ -21,7 +21,7 @@ namespace RenderEngine
 		m_window = glfwCreateWindow(screenWidth, screenHeight, "Main Window", NULL, NULL);
 
 		if (!m_window) 
-		{
+{
 			glfwTerminate();
 			return;
 		}
