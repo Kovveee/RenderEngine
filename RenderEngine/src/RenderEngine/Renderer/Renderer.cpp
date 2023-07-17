@@ -149,6 +149,8 @@ namespace RenderEngine
 		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
 
 		lightWorld *= glm::translate(lightPos) * glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
+
+		std::cout << "Hello" << std::endl;
 	}
 
 

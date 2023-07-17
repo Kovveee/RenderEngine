@@ -66,7 +66,8 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)bin\Debug-x64\RenderEngine\RenderEngine.dll" "$(SolutionDir)bin\Debug-x64\Sandbox" </Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
