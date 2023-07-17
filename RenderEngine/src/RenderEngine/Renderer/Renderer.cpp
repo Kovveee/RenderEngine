@@ -48,7 +48,13 @@ namespace RenderEngine
 
 	Renderer::~Renderer()
 	{
-
+		delete m_window;
+		delete shaderProgram;
+		delete lightShaderProgram;
+		delete cubeVao;
+		delete cubeIbo;
+		delete cubeVbo;
+		delete camera;
 	}
 
 
@@ -150,8 +156,6 @@ namespace RenderEngine
 
 		lightWorld *= glm::translate(lightPos) * glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
 	}
-
-
 	void Renderer::Render()
 	{
 		while (!glfwWindowShouldClose(m_window))
