@@ -20,6 +20,7 @@ public:
 	~Camera();
 	void Update(GLFWwindow* window ,float deltaTime);
 	glm::mat4 GetLookAt();
+	glm::vec3 GetPos();
 private:
 	glm::vec3 m_cameraPos;
 	glm::vec3 m_cameraFront;

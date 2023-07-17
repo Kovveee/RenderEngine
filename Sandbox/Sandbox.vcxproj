@@ -57,7 +57,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>RE_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\RenderEngine\src;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLM\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\RenderEngine\src;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLM\;$(SolutionDir)RenderEngine\vendor\imgui\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

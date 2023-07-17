@@ -25,7 +25,7 @@ glm::mat4 Camera::GetLookAt()
 }
 void Camera::MouseInputHandler(GLFWwindow* window)
 {
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		double xPos, yPos;
@@ -80,4 +80,7 @@ void Camera::KeyboardInputHandler(GLFWwindow* window, float deltaTime)
 	{
 		m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_speed * deltaTime;
 	}
+}
+glm::vec3 Camera::GetPos() {
+	return m_cameraPos;
 }
