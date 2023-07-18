@@ -58,7 +58,7 @@ namespace RenderEngine
 		glm::mat4 cubeWorld = glm::mat4(1.f);
 		glm::mat4 lightWorld = glm::mat4(1.f);
 
-		glm::vec3 lightPos = glm::vec3(-1.f, -3.f, 2.f);
+		glm::vec3 lightPos = glm::vec3(-1.f, 3.f, 2.f);
 
 		VertexArray* cubeVao;
 		VertexBuffer* cubeVbo;
