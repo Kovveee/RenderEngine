@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) 
+Shader::Shader(std::string vertexPath, std::string fragmentPath) 
 {
 	// Reading file and converting to char*
 	std::string vertexCode, fragmentCode;
@@ -81,6 +81,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	InitUniformVariable("worldIT");
 	InitUniformVariable("lightPos");
 	InitUniformVariable("cameraPos");
+	InitUniformVariable("objectColor");
+	InitUniformVariable("lightColor");
 }
 Shader::~Shader() 
 {
@@ -127,4 +129,5 @@ void Shader::setWVP(glm::mat4 worldMat, glm::mat4 viewMat, glm::mat4 projMat)
 	glUniformMatrix4fv(m_uniforms["worldMat"], 1, GL_FALSE, glm::value_ptr(worldMat));
 	glUniformMatrix4fv(m_uniforms["viewMat"], 1, GL_FALSE, glm::value_ptr(viewMat));
 	glUniformMatrix4fv(m_uniforms["projMat"], 1, GL_FALSE, glm::value_ptr(projMat));
+	glUniformMatrix4fv(m_uniforms["worldIT"], 1, GL_FALSE, glm::value_ptr(glm::inverse(glm::transpose(worldMat))));
 }

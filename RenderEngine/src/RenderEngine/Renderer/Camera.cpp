@@ -26,7 +26,7 @@ glm::mat4 Camera::GetLookAt()
 void Camera::MouseInputHandler(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
-	{
+	{ 
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		double xPos, yPos;
 		glfwGetCursorPos(window, &xPos, &yPos);

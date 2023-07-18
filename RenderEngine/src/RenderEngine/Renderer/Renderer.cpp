@@ -1,9 +1,5 @@
 #include "Renderer.h"
 
-#include <iostream>
-
-
-
 namespace RenderEngine
 {
 	Renderer::Renderer()
@@ -113,7 +109,6 @@ namespace RenderEngine
 			tempCubeWorld = worldMat;
 			tempCubeWorld *= glm::translate(pos) * glm::rotate<float>(glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
 			shader->setWVP(tempCubeWorld, view, projection);
-			shader->setUniform("worldIT", glm::inverse(glm::transpose(tempCubeWorld)));
 			shader->setUniform("lightPos", lightPos);
 			shader->setUniform("cameraPos", camera->GetPos());
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
@@ -123,14 +118,12 @@ namespace RenderEngine
 		tempCubeWorld = worldMat;
 		tempCubeWorld *= glm::translate(glm::vec3(0.f, -0.5f, 0.f)) * glm::rotate<float>(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 		shader->setWVP(tempCubeWorld, view, projection);
-		shader->setUniform("worldIT", glm::inverse(glm::transpose(tempCubeWorld)));
 		shader->setUniform("lightPos", lightPos);
 		shader->setUniform("cameraPos", camera->GetPos());
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 		tempCubeWorld = worldMat;
 		tempCubeWorld *= glm::translate(glm::vec3(0.f, 0.5f, 0.f)) * glm::rotate<float>(glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
 		shader->setWVP(tempCubeWorld, view, projection);
-		shader->setUniform("worldIT", glm::inverse(glm::transpose(tempCubeWorld)));
 		shader->setUniform("lightPos", lightPos);
 		shader->setUniform("cameraPos", camera->GetPos());
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
@@ -139,13 +132,13 @@ namespace RenderEngine
 		shader->UnuseProgram();
 		cubeVao->Unbind();
 	}
-
+	
 	void Renderer::Init()
 	{
-		shaderProgram = new Shader("C:\\dev\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\vShader.vert", "C:\\dev\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\fShader.frag");
+		shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
 
 
-		lightShaderProgram = new Shader("C:\\dev\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\lightShader.vert", "C:\\dev\\RenderEngine\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\lightShader.frag");
+		lightShaderProgram = new Shader(shaderFilePath + "lightShader.vert", shaderFilePath + "lightShader.frag");
 
 
 		projection = glm::perspective(glm::radians(45.f), screenWidth / screenHeight, 0.1f, 100.f);

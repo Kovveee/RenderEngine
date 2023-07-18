@@ -16,6 +16,8 @@
 
 // C++
 #include <string>
+#include <iostream>
+#include <filesystem>
 
 // RenderEngine
 #include "Vertex.h"
@@ -56,7 +58,7 @@ namespace RenderEngine
 		glm::mat4 cubeWorld = glm::mat4(1.f);
 		glm::mat4 lightWorld = glm::mat4(1.f);
 
-		glm::vec3 lightPos = glm::vec3(-1.f, 3.f, 2.f);
+		glm::vec3 lightPos = glm::vec3(-1.f, -3.f, 2.f);
 
 		VertexArray* cubeVao;
 		VertexBuffer* cubeVbo;
@@ -74,13 +76,13 @@ namespace RenderEngine
 		bool m_rotateYEnable = false;
 		bool m_rotateZEnable = false;
 
+		const std::string shaderFilePath = "..\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\";
+
 	
 		float deltaTime = 0;
 		float lastFrame = 0;
 
 		void CreateGUI();
-
-
 	};
 }
 
