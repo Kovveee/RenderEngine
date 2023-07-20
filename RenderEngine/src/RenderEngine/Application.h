@@ -14,6 +14,7 @@ namespace RenderEngine {
 		void Run();
 	private:
 		Renderer* m_renderer = NULL;
+		
 
 	};
 

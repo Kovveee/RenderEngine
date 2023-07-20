@@ -57,14 +57,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL;GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLM\;$(SolutionDir)RenderEngine\vendor\imgui\;$(SolutionDir)RenderEngine\vendor\STB_IMAGE</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLM\;$(SolutionDir)RenderEngine\vendor\imgui\;$(SolutionDir)RenderEngine\vendor\STB_IMAGE;$(SolutionDir)RenderEngine\vendor\ASSIMP\include;$(SolutionDir)RenderEngine\vendor\imgui\;$(SolutionDir)RenderEngine\vendor\STB_IMAGE;$(SolutionDir)RenderEngine\vendor\ASSIMP\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\vendor\GLFW\lib-vc2022;$(SolutionDir)RenderEngine\vendor\GLEW\lib\release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\vendor\GLFW\lib-vc2022;$(SolutionDir)RenderEngine\vendor\GLEW\lib\release\x64;$(SolutionDir)RenderEngine\vendor\ASSIMP\;%(AdditionalLibraryDirectories);$(SolutionDir)RenderEngine\vendor\ASSIMP\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);glew32s.lib;glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -79,18 +79,19 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL;GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLM\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLM\;$(SolutionDir)RenderEngine\vendor\imgui\;$(SolutionDir)RenderEngine\vendor\STB_IMAGE;$(SolutionDir)RenderEngine\vendor\ASSIMP\include;$(SolutionDir)RenderEngine\vendor\ASSIMP\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\vendor\GLFW\lib-vc2022;$(SolutionDir)RenderEngine\vendor\GLEW\lib\release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\vendor\GLFW\lib-vc2022;$(SolutionDir)RenderEngine\vendor\GLEW\lib\release\x64;%(AdditionalLibraryDirectories);$(SolutionDir)RenderEngine\vendor\ASSIMP\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);glew32s.lib;glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderEngine\Renderer\Model.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Camera.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Shader.h" />
     <ClInclude Include="src\RenderEngine\Renderer\ElementBuffer.h" />
@@ -115,6 +116,7 @@
     <ClInclude Include="vendor\STB_IMAGE\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RenderEngine\Renderer\Model.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Camera.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Shader.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\ElementBuffer.cpp" />
@@ -136,6 +138,8 @@
     <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\lightShader.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\lightShader.vert" />
+    <None Include="src\RenderEngine\Renderer\Shaders\modelLoading.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\modelLoading.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

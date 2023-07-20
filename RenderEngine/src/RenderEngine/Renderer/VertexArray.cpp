@@ -1,7 +1,7 @@
 #include "VertexArray.h"
 
 
-VertexArray::VertexArray() 
+VertexArray::VertexArray()
 {
 	glGenVertexArrays(1, &m_vaoID);
 }
@@ -20,7 +20,7 @@ void VertexArray::Unbind()
 void VertexArray::InitVertexArray()
 {
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)sizeof(glm::vec3));
 	glEnableVertexAttribArray(2);

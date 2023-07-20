@@ -2,32 +2,9 @@
 
 namespace RenderEngine
 {
-	Renderer::Renderer()
-		: m_window(NULL)
+	Renderer::Renderer(GLFWwindow *window, float screenWidth, float screenHeight)
+		: m_window(window),m_screenWidth(screenWidth), m_screenHeight(screenHeight)
 	{
-
-		// Init openGL
-		if (!glfwInit())
-			return;
-
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-		m_window = glfwCreateWindow(screenWidth, screenHeight, "Main Window", NULL, NULL);
-
-		if (!m_window) 
-{
-			glfwTerminate();
-			return;
-		}
-		glfwMakeContextCurrent(m_window);
-
-		glfwSwapInterval(1);
-
-		if (GLEW_OK != glewInit())
-			return;
-
 		// Init imGUI
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -39,7 +16,13 @@ namespace RenderEngine
 		ImGui_ImplGlfw_InitForOpenGL(m_window, true);
 		ImGui_ImplOpenGL3_Init("#version 330 core");
 
+		camera = nullptr;
+		m_texture = nullptr;
+		shaderProgram = nullptr;
+		lightShaderProgram = nullptr;
 		Init();
+
+		
 	}
 
 	Renderer::~Renderer()
@@ -47,9 +30,6 @@ namespace RenderEngine
 		delete m_window;
 		delete shaderProgram;
 		delete lightShaderProgram;
-		delete cubeVao;
-		delete cubeIbo;
-		delete cubeVbo;
 		delete camera;
 	}
 
@@ -58,10 +38,10 @@ namespace RenderEngine
 	{
 		Vertex vertices[] =
 		{
-			{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, //0
+			{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 1.f)}, //0
 			{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 0.f)},//1
-			{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, //2
-			{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, //3
+			{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(1.f, 1.f)}, //2
+			{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.f, 1.f), glm::vec2(1.f, 0.f)}, //3
 		};
 
 		const unsigned int indices[] =
@@ -73,17 +53,17 @@ namespace RenderEngine
 		cubeVao = new VertexArray();
 		cubeVao->Bind();
 
-		cubeVbo = new VertexBuffer(8, vertices);
-		cubeVbo->Bind();
+		cubeVbo.SetBufferData(4, vertices);
+		cubeVbo.Bind();
 
-		cubeIbo = new ElementBuffer(36, indices);
-		cubeIbo->Bind();
+		cubeIbo.SetBufferData(6, indices);
+		cubeIbo.Bind();
 
 		cubeVao->InitVertexArray();
 
 		cubeVao->Unbind();
-		cubeIbo->Unbind();
-		cubeVbo->Unbind();
+		cubeIbo.Unbind();
+		cubeVbo.Unbind();
 
 
 
@@ -92,7 +72,14 @@ namespace RenderEngine
 	{
 		cubeVao->Bind();
 		shader->UseProgram();
-		shaderProgram->setUniform("objectColor", m_cubeColor);
+		m_texture->Bind();
+		
+		shader->setUniform("objectColor", m_cubeColor);
+		shader->InitUniformVariable("ourTexture");
+		shader->setUniform("ourTexture", 0);
+		shader->setUniform("cameraPos", camera->GetPos());
+		shader->setLight(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f), lightPos);
+		
 		glm::mat4 tempCubeWorld;
 		glm::vec3 pos;
 		float angle = 0;
@@ -109,8 +96,6 @@ namespace RenderEngine
 			tempCubeWorld = worldMat;
 			tempCubeWorld *= glm::translate(pos) * glm::rotate<float>(glm::radians(angle), glm::vec3(0.f, 1.f, 0.f));
 			shader->setWVP(tempCubeWorld, view, projection);
-			shader->setUniform("lightPos", lightPos);
-			shader->setUniform("cameraPos", camera->GetPos());
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 			angle += 90;
 		}
@@ -118,17 +103,13 @@ namespace RenderEngine
 		tempCubeWorld = worldMat;
 		tempCubeWorld *= glm::translate(glm::vec3(0.f, -0.5f, 0.f)) * glm::rotate<float>(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 		shader->setWVP(tempCubeWorld, view, projection);
-		shader->setUniform("lightPos", lightPos);
-		shader->setUniform("cameraPos", camera->GetPos());
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 		tempCubeWorld = worldMat;
 		tempCubeWorld *= glm::translate(glm::vec3(0.f, 0.5f, 0.f)) * glm::rotate<float>(glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
 		shader->setWVP(tempCubeWorld, view, projection);
-		shader->setUniform("lightPos", lightPos);
-		shader->setUniform("cameraPos", camera->GetPos());
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
-
+		m_texture->UnBind();
 		shader->UnuseProgram();
 		cubeVao->Unbind();
 	}
@@ -136,14 +117,20 @@ namespace RenderEngine
 	void Renderer::Init()
 	{
 		shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
-
-
 		lightShaderProgram = new Shader(shaderFilePath + "lightShader.vert", shaderFilePath + "lightShader.frag");
+		modelShader = new Shader(shaderFilePath + "modelLoading.vert", shaderFilePath + "modelLoading.frag");
 
+		m_texture = new Texture(textureFolderPath + "container.jpg","normal");
 
-		projection = glm::perspective(glm::radians(45.f), screenWidth / screenHeight, 0.1f, 100.f);
+		projection = glm::perspective(glm::radians(45.f), m_screenWidth / m_screenHeight, 0.1f, 100.f);
+		
+		//model = new Model("src\\Models\\cube\\untitled.obj");
+		backpack = new Model("src\\Models\\spacemarine\\space_marine.obj");
 
 		InitCube();
+		shaderProgram->UseProgram();
+		shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
+		shaderProgram->UnuseProgram();
 
 		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
 
@@ -166,8 +153,6 @@ namespace RenderEngine
 			CreateGUI();
 
 			shaderProgram->UseProgram();
-			shaderProgram->InitUniformVariable("objectColor");
-			shaderProgram->InitUniformVariable("lightColor");
 			shaderProgram->setUniform("lightColor", glm::vec3(1.0f, 1.f, 1.f));
 			shaderProgram->UnuseProgram();
 
@@ -199,10 +184,10 @@ namespace RenderEngine
 				m_lastCubeRotationAngle = m_cubeRotationAngle;
 			}
 
-			DrawCube(cubeWorld, shaderProgram);
+			//DrawCube(cubeWorld, shaderProgram);
 			DrawCube(lightWorld, lightShaderProgram);
-
-
+			//model->Draw(shaderProgram, cubeWorld, view, projection, camera->GetPos(), m_cubeColor);
+			backpack->Draw(shaderProgram, glm::translate(glm::vec3(0.f, -6.f, 0.f)), view, projection, camera->GetPos(), m_cubeColor);
 
 			KeyboardInputHandler();
 			MouseInputHandler();

@@ -82,7 +82,17 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 	InitUniformVariable("lightPos");
 	InitUniformVariable("cameraPos");
 	InitUniformVariable("objectColor");
-	InitUniformVariable("lightColor");
+
+	InitUniformVariable("material.ambient");
+	InitUniformVariable("material.diffuse");
+	InitUniformVariable("material.specular");
+	InitUniformVariable("material.shininess");
+
+	InitUniformVariable("light.ambient");
+	InitUniformVariable("light.diffuse");
+	InitUniformVariable("light.specular");
+	InitUniformVariable("light.position");
+
 }
 Shader::~Shader() 
 {
@@ -123,6 +133,16 @@ void Shader::setUniform<glm::mat4>(const char* name, glm::mat4 value)
 {
 	glUniformMatrix4fv(m_uniforms[name], 1, GL_FALSE, glm::value_ptr(value));
 }
+template<>
+void Shader::setUniform<int>(const char* name, int value)
+{
+	glUniform1i(m_uniforms[name],value);
+}
+template<>
+void Shader::setUniform<float>(const char* name, float value)
+{
+	glUniform1f(m_uniforms[name], value);
+}
 
 void Shader::setWVP(glm::mat4 worldMat, glm::mat4 viewMat, glm::mat4 projMat)
 {
@@ -130,4 +150,26 @@ void Shader::setWVP(glm::mat4 worldMat, glm::mat4 viewMat, glm::mat4 projMat)
 	glUniformMatrix4fv(m_uniforms["viewMat"], 1, GL_FALSE, glm::value_ptr(viewMat));
 	glUniformMatrix4fv(m_uniforms["projMat"], 1, GL_FALSE, glm::value_ptr(projMat));
 	glUniformMatrix4fv(m_uniforms["worldIT"], 1, GL_FALSE, glm::value_ptr(glm::inverse(glm::transpose(worldMat))));
+}
+
+
+
+void Shader::setMaterial(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, float shininess)
+{
+	setUniform("material.ambient", ambientColor);
+	setUniform("material.diffuse", diffuseColor);
+	setUniform("material.specular", specularColor);
+	setUniform("material.shininess", shininess);
+
+}
+void Shader::setLight(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 lightPosition)
+{
+	setUniform("light.ambient", ambientColor);
+	setUniform("light.diffuse", diffuseColor);
+	setUniform("light.specular", specularColor);
+	setUniform("light.position", lightPosition);
+}
+void Shader::setCameraPos(glm::vec3 cameraPos)
+{
+	setUniform("cameraPos", cameraPos);
 }

@@ -7,10 +7,11 @@
 class ElementBuffer
 {
 public:
-	ElementBuffer(const unsigned int count, const unsigned int* indices);
+	ElementBuffer();
 	~ElementBuffer();
 	void Bind();
 	void Unbind();
+	void SetBufferData(const unsigned int count, const unsigned int* indices);
 private:
 	GLuint m_bufferID;
 };

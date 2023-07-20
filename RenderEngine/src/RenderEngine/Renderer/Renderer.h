@@ -26,6 +26,8 @@
 #include "ElementBuffer.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Texture.h"
+#include "Model.h"
 
 
 namespace RenderEngine 
@@ -34,7 +36,7 @@ namespace RenderEngine
 	class Renderer
 	{
 	public:
-		Renderer();
+		Renderer(GLFWwindow* window, float screenWidth, float screenHeight);
 		~Renderer();
 		void Init();
 		void Render();
@@ -44,13 +46,19 @@ namespace RenderEngine
 		void MouseInputHandler();
 
 	private:
+		VertexArray* cubeVao;
+
+		Model* model;
+		Model* backpack;
+
 		GLFWwindow* m_window;
 
 		Shader* shaderProgram;
 		Shader* lightShaderProgram;
+		Shader* modelShader;
 
-		const float screenWidth = 800.f;
-		const float screenHeight = 600.f;
+		float m_screenWidth;
+		float m_screenHeight;
 
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
@@ -60,9 +68,10 @@ namespace RenderEngine
 
 		glm::vec3 lightPos = glm::vec3(-1.f, 3.f, 2.f);
 
-		VertexArray* cubeVao;
-		VertexBuffer* cubeVbo;
-		ElementBuffer* cubeIbo;
+		VertexBuffer cubeVbo;
+		ElementBuffer cubeIbo;
+
+		Texture* m_texture;
 
 
 		Camera* camera;
@@ -77,6 +86,7 @@ namespace RenderEngine
 		bool m_rotateZEnable = false;
 
 		const std::string shaderFilePath = "..\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\";
+		const std::string textureFolderPath = "src\\Textures\\";
 
 	
 		float deltaTime = 0;
