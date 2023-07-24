@@ -10,7 +10,7 @@ namespace RenderEngine {
 	public:
 		Application();
 		virtual ~Application();
-
+		GLFWwindow* window;
 		void Run();
 	private:
 		Renderer* m_renderer = NULL;

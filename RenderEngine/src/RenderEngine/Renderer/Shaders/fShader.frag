@@ -23,7 +23,6 @@ in vec3 FragPos;
 in vec2 TexCoord;
 
 uniform vec3 objectColor;
-uniform vec3 lightColor;
 uniform vec3 cameraPos;
 uniform sampler2D ourTexture;
 uniform Material material;

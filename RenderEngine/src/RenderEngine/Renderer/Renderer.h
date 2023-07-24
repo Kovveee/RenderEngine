@@ -18,6 +18,7 @@
 #include <string>
 #include <iostream>
 #include <filesystem>
+#include <vector>
 
 // RenderEngine
 #include "Vertex.h"
@@ -40,12 +41,11 @@ namespace RenderEngine
 		~Renderer();
 		void Init();
 		void Render();
-		void InitCube();
-		void DrawCube(glm::mat4 worldMat, Shader* shader);
 		void KeyboardInputHandler();
 		void MouseInputHandler();
-
 	private:
+		std::vector<Model*> m_models;
+
 		VertexArray* cubeVao;
 
 		Model* model;
@@ -68,13 +68,9 @@ namespace RenderEngine
 
 		glm::vec3 lightPos = glm::vec3(-1.f, 3.f, 2.f);
 
-		VertexBuffer cubeVbo;
-		ElementBuffer cubeIbo;
-
-		Texture* m_texture;
-
-
 		Camera* camera;
+
+		
 
 
 		// GUI variables
@@ -92,7 +88,9 @@ namespace RenderEngine
 		float deltaTime = 0;
 		float lastFrame = 0;
 
-		void CreateGUI();
+		void MainWindow();
+		void PropertyWindow(Model* model);
+		
 	};
 }
 
