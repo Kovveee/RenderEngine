@@ -2,7 +2,7 @@
 
 namespace RenderEngine
 {
-	Renderer::Renderer(GLFWwindow *window, float screenWidth, float screenHeight)
+	Renderer::Renderer(GLFWwindow *window, int screenWidth, int screenHeight)
 		: m_window(window),m_screenWidth(screenWidth), m_screenHeight(screenHeight)
 	{
 
@@ -51,7 +51,7 @@ namespace RenderEngine
 		shaderProgram->UseProgram();
 		shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
 		shaderProgram->UnuseProgram();
-		projection = glm::perspective(glm::radians(45.f), m_screenWidth / m_screenHeight, 0.1f, 100.f);
+		projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
 
 
 		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
@@ -66,6 +66,10 @@ namespace RenderEngine
 			glEnable(GL_CULL_FACE);
 			glCullFace(GL_BACK);
 			glfwPollEvents();
+
+			glfwGetFramebufferSize(m_window, &m_screenWidth, &m_screenHeight);
+			glViewport(0, 0, m_screenWidth, m_screenHeight);
+			projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
 
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();

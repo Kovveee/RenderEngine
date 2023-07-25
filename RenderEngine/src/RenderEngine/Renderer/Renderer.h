@@ -37,7 +37,7 @@ namespace RenderEngine
 	class Renderer
 	{
 	public:
-		Renderer(GLFWwindow* window, float screenWidth, float screenHeight);
+		Renderer(GLFWwindow* window, int screenWidth, int screenHeight);
 		~Renderer();
 		void Init();
 		void Render();
@@ -57,8 +57,8 @@ namespace RenderEngine
 		Shader* lightShaderProgram;
 		Shader* modelShader;
 
-		float m_screenWidth;
-		float m_screenHeight;
+		int m_screenWidth;
+		int m_screenHeight;
 
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
