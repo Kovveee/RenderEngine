@@ -30,6 +30,7 @@
 #include "Texture.h"
 #include "Model.h"
 #include "DirectionalLight.h"
+#include "PointLight.h"
 #include "LightSource.h"
 
 namespace RenderEngine 
@@ -46,7 +47,12 @@ namespace RenderEngine
 		void MouseInputHandler();
 	private:
 		std::vector<Model*> m_models;
+		std::vector<LightSource*> m_lights;
 
+		int m_dirLightNum = 0;
+		int m_pointLightNum = 0;
+
+		LightSource* pointLight;
 		LightSource* directional;
 		LightSource* directional2;
 

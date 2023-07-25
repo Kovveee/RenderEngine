@@ -33,6 +33,10 @@ namespace RenderEngine
 		{
 			delete model;
 		}
+		for(LightSource* light: m_lights)
+		{
+			delete light;
+		}
 	}
 	void Renderer::Init()
 	{
@@ -41,18 +45,18 @@ namespace RenderEngine
 		model = new Model("cube", "src\\Models\\cube\\untitled.obj");
 		backpack = new Model("spacemarine", "src\\Models\\spacemarine\\space_marine.obj");
 
-		directional = new DirectionalLight(0, glm::vec3(0.f, 0.1f, 0.4f), glm::vec3(0.f, 0.2f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 15.f));
-		directional2 = new DirectionalLight(1, glm::vec3(0.2f, 0.2f, 0.f), glm::vec3(5.f, 0.3f, 0.0), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, -15.f));
+		pointLight = new PointLight(m_pointLightNum++, glm::vec3(0.5f, 0.f, 0.5f), glm::vec3(0.8f, 0.f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 0.f));
+		directional = new DirectionalLight(m_dirLightNum, glm::vec3(0.f, 0.1f, 0.4f), glm::vec3(0.f, 0.2f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 15.f));
+		m_dirLightNum++;
+		directional2 = new DirectionalLight(m_dirLightNum++, glm::vec3(0.2f, 0.2f, 0.f), glm::vec3(5.f, 0.3f, 0.0), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, -15.f));
+
+		m_lights.push_back(directional);
+		m_lights.push_back(directional2);
+		m_lights.push_back(pointLight);
 
 
 		m_models.push_back(model);
 		m_models.push_back(backpack);
-
-		std::string hello = "hello";
-		std::cout << hello;
-		std::cout << hello.c_str();
-		std::cout << hello;
-
 
 		shaderProgram->UseProgram();
 		shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
@@ -93,10 +97,18 @@ namespace RenderEngine
 
 			view = camera->GetLookAt();
 
+
+			shaderProgram->UseProgram();
+			shaderProgram->setUniform("pointLightNum", m_pointLightNum);
+			shaderProgram->setUniform("dirLightNum", m_dirLightNum);
+			shaderProgram->UnuseProgram();
+
+			for(int i = 0; i < m_lights.size(); ++i)
+			{
+				m_lights[i]->SetInShader(shaderProgram);
+			}
 			for(int i = 0; i < m_models.size();++i)
 			{
-				directional->SetInShader(shaderProgram);
-				directional2->SetInShader(shaderProgram);
 				m_models[i]->Draw(shaderProgram, view, projection, camera->GetPos());
 			}
 

@@ -79,9 +79,7 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 	InitUniformVariable("viewMat");
 	InitUniformVariable("projMat");
 	InitUniformVariable("worldIT");
-	InitUniformVariable("lightPos");
 	InitUniformVariable("cameraPos");
-	InitUniformVariable("objectColor");
 
 	InitUniformVariable("material.ambient");
 	InitUniformVariable("material.diffuse");
@@ -92,6 +90,9 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 	InitUniformVariable("light.diffuse");
 	InitUniformVariable("light.specular");
 	InitUniformVariable("light.position");
+
+	InitUniformVariable("pointLightNum");
+	InitUniformVariable("dirLightNum");
 
 }
 Shader::~Shader() 

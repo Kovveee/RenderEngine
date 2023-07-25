@@ -20,12 +20,13 @@ protected:
 	glm::vec3 m_diffuse;
 	glm::vec3 m_specular;
 	const unsigned int m_lightId;
+	std::string m_name;
 
 	void SetColors(Shader* shader)
 	{
-		shader->InitUniformVariable("directionalLights[" + std::to_string(m_lightId) + "].ambient");
-		shader->InitUniformVariable("directionalLights[" + std::to_string(m_lightId) + "].diffuse");
-		shader->InitUniformVariable("directionalLights[" + std::to_string(m_lightId) + "].specular");
+		shader->InitUniformVariable(m_name + ".ambient");
+		shader->InitUniformVariable(m_name + ".diffuse");
+		shader->InitUniformVariable(m_name + ".specular");
 	}
 private:
 	
