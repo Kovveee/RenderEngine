@@ -19,6 +19,7 @@
 #include "VertexBuffer.h"
 #include "ElementBuffer.h"
 
+
 struct Mesh
 {
 	VertexArray vao;
@@ -26,6 +27,7 @@ struct Mesh
 	ElementBuffer ibo;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
+
 
 	void SetData() {
 		vao.Bind();
@@ -46,7 +48,7 @@ class Model
 public:
 	Model(const std::string modelName, const std::string filePath);
 	~Model();
-	void Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 cameraPos, glm::vec3 objectColor);
+	void Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 cameraPos);
 	Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene);
 	void ProcessNode(aiNode* node, const aiScene* scene);
 	std::string GetName() const;

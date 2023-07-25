@@ -29,7 +29,8 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "Model.h"
-
+#include "DirectionalLight.h"
+#include "LightSource.h"
 
 namespace RenderEngine 
 {
@@ -45,6 +46,9 @@ namespace RenderEngine
 		void MouseInputHandler();
 	private:
 		std::vector<Model*> m_models;
+
+		LightSource* directional;
+		LightSource* directional2;
 
 		VertexArray* cubeVao;
 

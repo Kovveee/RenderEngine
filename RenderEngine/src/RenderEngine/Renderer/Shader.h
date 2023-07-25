@@ -18,7 +18,7 @@ public:
 	void UseProgram();
 	void UnuseProgram();
 
-	void InitUniformVariable(const char* name);
+	void InitUniformVariable(std::string name);
 	template<typename T>
 	void setUniform(const char* name, T value);
 	template<>
@@ -36,13 +36,13 @@ public:
 
 	void setWVP(glm::mat4 worldMat, glm::mat4 viewMat, glm::mat4 projMat);
 	void setMaterial(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, float shininess);
-	void setLight(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 lightPosition);
+	void setLightColor(std::string name, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor);
 	void setCameraPos(glm::vec3 cameraPos);
 
 
 
 private:
 	GLuint m_programID;
-	std::map<const char*, int> m_uniforms;
+	std::map<std::string, int> m_uniforms;
 };
 

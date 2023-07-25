@@ -91,6 +91,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderEngine\Renderer\DirectionalLight.h" />
+    <ClInclude Include="src\RenderEngine\Renderer\LightSource.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Model.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Camera.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Shader.h" />
@@ -116,6 +118,7 @@
     <ClInclude Include="vendor\STB_IMAGE\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RenderEngine\Renderer\DirectionalLight.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Model.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Camera.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Shader.cpp" />
@@ -136,10 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />
-    <None Include="src\RenderEngine\Renderer\Shaders\lightShader.frag" />
-    <None Include="src\RenderEngine\Renderer\Shaders\lightShader.vert" />
-    <None Include="src\RenderEngine\Renderer\Shaders\modelLoading.frag" />
-    <None Include="src\RenderEngine\Renderer\Shaders\modelLoading.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -37,19 +37,25 @@ namespace RenderEngine
 	void Renderer::Init()
 	{
 		shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
-		lightShaderProgram = new Shader(shaderFilePath + "lightShader.vert", shaderFilePath + "lightShader.frag");
-		modelShader = new Shader(shaderFilePath + "modelLoading.vert", shaderFilePath + "modelLoading.frag");
-
 		
 		model = new Model("cube", "src\\Models\\cube\\untitled.obj");
 		backpack = new Model("spacemarine", "src\\Models\\spacemarine\\space_marine.obj");
 
+		directional = new DirectionalLight(0, glm::vec3(0.f, 0.1f, 0.4f), glm::vec3(0.f, 0.2f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 15.f));
+		directional2 = new DirectionalLight(1, glm::vec3(0.2f, 0.2f, 0.f), glm::vec3(5.f, 0.3f, 0.0), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, -15.f));
+
+
 		m_models.push_back(model);
 		m_models.push_back(backpack);
 
+		std::string hello = "hello";
+		std::cout << hello;
+		std::cout << hello.c_str();
+		std::cout << hello;
+
 
 		shaderProgram->UseProgram();
-		shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
+		shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
 		shaderProgram->UnuseProgram();
 		projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
 
@@ -89,7 +95,9 @@ namespace RenderEngine
 
 			for(int i = 0; i < m_models.size();++i)
 			{
-				m_models[i]->Draw(shaderProgram, view, projection, camera->GetPos(), m_cubeColor);
+				directional->SetInShader(shaderProgram);
+				directional2->SetInShader(shaderProgram);
+				m_models[i]->Draw(shaderProgram, view, projection, camera->GetPos());
 			}
 
 			KeyboardInputHandler();

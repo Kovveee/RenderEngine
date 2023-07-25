@@ -84,6 +84,12 @@
     <ClInclude Include="src\RenderEngine\Renderer\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\LightSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Application.cpp">
@@ -137,13 +143,12 @@
     <ClCompile Include="src\RenderEngine\Renderer\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderEngine\Renderer\DirectionalLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />
-    <None Include="src\RenderEngine\Renderer\Shaders\lightShader.frag" />
-    <None Include="src\RenderEngine\Renderer\Shaders\lightShader.vert" />
-    <None Include="src\RenderEngine\Renderer\Shaders\modelLoading.vert" />
-    <None Include="src\RenderEngine\Renderer\Shaders\modelLoading.frag" />
   </ItemGroup>
 </Project>

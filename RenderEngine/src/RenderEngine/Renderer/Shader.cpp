@@ -105,8 +105,8 @@ void Shader::UnuseProgram()
 {
 	glUseProgram(0);
 }
-void Shader::InitUniformVariable(const char* name) {
-	m_uniforms[name] = glGetUniformLocation(m_programID, name);
+void Shader::InitUniformVariable(std::string name) {
+	m_uniforms[name] = glGetUniformLocation(m_programID, name.c_str());
 }
 template<typename T>
 void Shader::setUniform(const char* name, T value) 
@@ -162,12 +162,11 @@ void Shader::setMaterial(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::ve
 	setUniform("material.shininess", shininess);
 
 }
-void Shader::setLight(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 lightPosition)
+void Shader::setLightColor(std::string name, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor)
 {
-	setUniform("light.ambient", ambientColor);
-	setUniform("light.diffuse", diffuseColor);
-	setUniform("light.specular", specularColor);
-	setUniform("light.position", lightPosition);
+	setUniform((name +".ambient").c_str(), ambientColor);
+	setUniform((name+".diffuse").c_str(), diffuseColor);
+	setUniform((name+".specular").c_str(), specularColor);
 }
 void Shader::setCameraPos(glm::vec3 cameraPos)
 {

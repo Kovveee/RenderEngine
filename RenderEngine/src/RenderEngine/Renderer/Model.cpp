@@ -70,14 +70,12 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
  	return meshToAdd;
 }
 
-void Model::Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 cameraPos, glm::vec3 objectColor)
+void Model::Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 cameraPos)
 {
 	shader->UseProgram();
 	shader->setCameraPos(cameraPos);
 	glm::mat4 world = glm::rotate(glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f)) * glm::rotate(glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f)) * glm::rotate(glm::radians(m_rotation.x), glm::vec3(1.f, 0.f,0.f)) * glm::translate(m_translation) * glm::scale(m_scale) * glm::mat4(1);
 	shader->setWVP(world, view, proj);
-	shader->setLight(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 3.f, 2.f));
-	shader->setUniform("objectColor", objectColor);
 
 
 	for(unsigned int i = 0; i < meshes.size(); ++i)
