@@ -11,9 +11,11 @@ public:
 	Texture(std::string imagePath, std::string type);
 	~Texture();
 	void Bind();
+	void Bind(unsigned int slot);
 	void UnBind();
+	void UnBind(unsigned int slot);
 	const std::string GetType();
-	const unsigned int* GetID();
+	unsigned int GetID();
 	const std::string GetPath();
 private:
 	std::string m_type;

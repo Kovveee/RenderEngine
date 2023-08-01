@@ -32,6 +32,8 @@ public:
 	template<>
 	void setUniform<int>(const char* name, int value);
 	template<>
+	void setUniform<unsigned int>(const char* name, unsigned int value);
+	template<>
 	void setUniform<float>(const char* name, float value);
 
 	void setWVP(glm::mat4 worldMat, glm::mat4 viewMat, glm::mat4 projMat);

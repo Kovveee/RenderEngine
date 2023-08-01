@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-// TO DO:  Make it better
 const float YAW = -90.f;
 const float PITCH = 0.f;
 const float SENSITIVITY = 0.05f;

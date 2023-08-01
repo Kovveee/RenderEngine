@@ -140,6 +140,11 @@ void Shader::setUniform<int>(const char* name, int value)
 	glUniform1i(m_uniforms[name],value);
 }
 template<>
+void Shader::setUniform<unsigned int>(const char* name, unsigned int value)
+{
+	glUniform1i(m_uniforms[name], value);
+}
+template<>
 void Shader::setUniform<float>(const char* name, float value)
 {
 	glUniform1f(m_uniforms[name], value);

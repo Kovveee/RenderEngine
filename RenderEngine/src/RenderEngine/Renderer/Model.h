@@ -27,7 +27,8 @@ struct Mesh
 	ElementBuffer ibo;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-
+	unsigned int materialINdex;
+	std::vector<Texture*> textures;
 
 	void SetData() {
 		vao.Bind();
@@ -49,8 +50,6 @@ public:
 	Model(const std::string modelName, const std::string filePath);
 	~Model();
 	void Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 cameraPos);
-	Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene);
-	void ProcessNode(aiNode* node, const aiScene* scene);
 	std::string GetName() const;
 	glm::vec3* GetTranslation() { return &m_translation; }
 	glm::vec3* GetRotation() { return &m_rotation; }
@@ -63,6 +62,12 @@ private:
 	glm::vec3 m_translation;
 	glm::vec3 m_rotation;
 	glm::vec3 m_scale;
-	std::string m_path;
+	std::string m_directory;
+
+	Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene);
+	std::vector<Texture*> ProcessMaterial(aiMaterial* material, const aiScene* scene, Mesh* mesh);
+	void ProcessNode(aiNode* node, const aiScene* scene);
+	bool isTextureLoaded(aiString name, Mesh* mesh);
+
 };
 

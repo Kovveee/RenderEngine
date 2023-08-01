@@ -11,20 +11,25 @@ Texture::Texture(std::string imagePath, std::string type) :
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	stbi_set_flip_vertically_on_load(true);
-	//data = stbi_load(imagePath.c_str(), &m_width, &m_height, &m_nrChannels, 0);
-	/*if (data)
+	data = stbi_load(imagePath.c_str(), &m_width, &m_height, &m_nrChannels, 0);
+	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		GLenum format = GL_RGB;
+		if (m_nrChannels == 1)
+			format = GL_RED;
+		else if (m_nrChannels == 4)
+			format = GL_RGBA;
+		glTexImage2D(GL_TEXTURE_2D, 0, format, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{
 		std::cout << "FAILED::TO::LOAD::TEXTURE::FROM: "<<imagePath<< std::endl;
-	}*/
+	}
 
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//stbi_image_free(data);
+	stbi_image_free(data);
 }
 Texture::~Texture()
 {
@@ -34,17 +39,28 @@ void Texture::Bind()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_textureID);
 }
+void Texture::Bind(unsigned int slot)
+{
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_2D, m_textureID);
+}
 void Texture::UnBind()
 {
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+void Texture::UnBind(unsigned int slot)
+{
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 const std::string Texture::GetType()
 {
 	return m_type;
 }
-const unsigned int* Texture::GetID()
+unsigned int Texture::GetID()
 {
-	return &m_textureID;
+	return m_textureID;
 }
 const std::string Texture::GetPath()
 {

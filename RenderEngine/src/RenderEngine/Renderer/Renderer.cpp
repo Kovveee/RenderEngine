@@ -19,7 +19,6 @@ namespace RenderEngine
 
 		camera = nullptr;
 		shaderProgram = nullptr;
-		lightShaderProgram = nullptr;
 		Init();
 		
 	}
@@ -27,7 +26,6 @@ namespace RenderEngine
 	Renderer::~Renderer()
 	{
 		delete shaderProgram;
-		delete lightShaderProgram;
 		delete camera;
 		for(Model* model: m_models)
 		{
@@ -42,27 +40,14 @@ namespace RenderEngine
 	{
 		shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
 		
-		model = new Model("cube", "src\\Models\\cube\\untitled.obj");
-		backpack = new Model("spacemarine", "src\\Models\\spacemarine\\space_marine.obj");
+		m_lights.push_back(new PointLight(m_pointLightNum++, glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 5.f)));
+		m_lights.push_back(new DirectionalLight(m_dirLightNum++, glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, -5.f, 0.f)));
 
-		pointLight = new PointLight(m_pointLightNum++, glm::vec3(0.5f, 0.f, 0.5f), glm::vec3(0.8f, 0.f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 0.f));
-		directional = new DirectionalLight(m_dirLightNum, glm::vec3(0.f, 0.1f, 0.4f), glm::vec3(0.f, 0.2f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 15.f));
-		m_dirLightNum++;
-		directional2 = new DirectionalLight(m_dirLightNum++, glm::vec3(0.2f, 0.2f, 0.f), glm::vec3(5.f, 0.3f, 0.0), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, -15.f));
-
-		m_lights.push_back(directional);
-		m_lights.push_back(directional2);
-		m_lights.push_back(pointLight);
-
-
-		m_models.push_back(model);
-		m_models.push_back(backpack);
+		m_models.push_back(new Model("cube", "src\\Models\\cube\\untitled2.obj"));
 
 		shaderProgram->UseProgram();
 		shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
 		shaderProgram->UnuseProgram();
-		projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
-
 
 		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
 	}
@@ -79,13 +64,10 @@ namespace RenderEngine
 
 			glfwGetFramebufferSize(m_window, &m_screenWidth, &m_screenHeight);
 			glViewport(0, 0, m_screenWidth, m_screenHeight);
-			projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
 
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
-		
-			
 
 			MainWindow();
 
@@ -94,9 +76,6 @@ namespace RenderEngine
 			lastFrame = currentFrame;
 
 			camera->Update(m_window, deltaTime);
-
-			view = camera->GetLookAt();
-
 
 			shaderProgram->UseProgram();
 			shaderProgram->setUniform("pointLightNum", m_pointLightNum);
@@ -109,7 +88,7 @@ namespace RenderEngine
 			}
 			for(int i = 0; i < m_models.size();++i)
 			{
-				m_models[i]->Draw(shaderProgram, view, projection, camera->GetPos());
+				m_models[i]->Draw(shaderProgram, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
 			}
 
 			KeyboardInputHandler();

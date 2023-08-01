@@ -52,36 +52,14 @@ namespace RenderEngine
 		int m_dirLightNum = 0;
 		int m_pointLightNum = 0;
 
-		LightSource* pointLight;
-		LightSource* directional;
-		LightSource* directional2;
-
-		VertexArray* cubeVao;
-
-		Model* model;
-		Model* backpack;
-
 		GLFWwindow* m_window;
 
 		Shader* shaderProgram;
-		Shader* lightShaderProgram;
-		Shader* modelShader;
 
 		int m_screenWidth;
 		int m_screenHeight;
 
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
-
-		glm::mat4 cubeWorld = glm::mat4(1.f);
-		glm::mat4 lightWorld = glm::mat4(1.f);
-
-		glm::vec3 lightPos = glm::vec3(-1.f, 3.f, 2.f);
-
 		Camera* camera;
-
-		
-
 
 		// GUI variables
 		glm::vec3 m_cubeColor = glm::vec3(1.f);
