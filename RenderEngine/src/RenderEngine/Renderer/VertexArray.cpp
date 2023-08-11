@@ -9,15 +9,15 @@ VertexArray::~VertexArray()
 {
 	glDeleteVertexArrays(1, &m_vaoID);
 }
-void VertexArray::Bind()
+void VertexArray::bind()
 {
 	glBindVertexArray(m_vaoID);
 }
-void VertexArray::Unbind()
+void VertexArray::unbind()
 {
 	glBindVertexArray(0);
 }
-void VertexArray::InitVertexArray()
+void VertexArray::initVertexArray()
 {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);

@@ -9,14 +9,13 @@ class Texture
 {
 public:
 	Texture(std::string imagePath, std::string type);
-	~Texture();
-	void Bind();
-	void Bind(unsigned int slot);
-	void UnBind();
-	void UnBind(unsigned int slot);
-	const std::string GetType();
-	unsigned int GetID();
-	const std::string GetPath();
+	void bind();
+	void bind(unsigned int slot);
+	void unBind();
+	void unBind(unsigned int slot);
+	const std::string getType() { return m_type; }
+	const unsigned int getID() { return m_textureID;  }
+	const std::string getPath() { return m_path; }
 private:
 	std::string m_type;
 	std::string m_path;

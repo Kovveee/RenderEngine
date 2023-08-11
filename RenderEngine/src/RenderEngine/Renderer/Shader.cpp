@@ -8,26 +8,26 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 
 	vShaderFile.exceptions(std::ifstream::badbit);
 	fShaderFile.exceptions(std::ifstream::badbit);
-	try {
-		vShaderFile.open(vertexPath);
-		fShaderFile.open(fragmentPath);
 
-		std::stringstream vShaderStream, fShaderStream;
-
-		vShaderStream << vShaderFile.rdbuf();
-		fShaderStream << fShaderFile.rdbuf();
-
-
-		vShaderFile.close();
-		fShaderFile.close();
-
-		vertexCode = vShaderStream.str();
-		fragmentCode = fShaderStream.str();
-		
-	}
-	catch (std::ifstream::failure& e) {
+	vShaderFile.open(vertexPath);
+	fShaderFile.open(fragmentPath);
+	if(!vShaderFile || !fShaderFile)
+	{
 		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-	};
+		return;
+	}
+
+	std::stringstream vShaderStream, fShaderStream;
+
+	vShaderStream << vShaderFile.rdbuf();
+	fShaderStream << fShaderFile.rdbuf();
+
+
+	vShaderFile.close();
+	fShaderFile.close();
+
+	vertexCode = vShaderStream.str();
+	fragmentCode = fShaderStream.str();
 
 	const char* vShaderCode = vertexCode.c_str();
 	const char* fShaderCode = fragmentCode.c_str();
@@ -75,38 +75,38 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
 
-	InitUniformVariable("worldMat");
-	InitUniformVariable("viewMat");
-	InitUniformVariable("projMat");
-	InitUniformVariable("worldIT");
-	InitUniformVariable("cameraPos");
+	initUniformVariable("worldMat");
+	initUniformVariable("viewMat");
+	initUniformVariable("projMat");
+	initUniformVariable("worldIT");
+	initUniformVariable("cameraPos");
 
-	InitUniformVariable("material.ambient");
-	InitUniformVariable("material.diffuse");
-	InitUniformVariable("material.specular");
-	InitUniformVariable("material.shininess");
+	initUniformVariable("material.ambient");
+	initUniformVariable("material.diffuse");
+	initUniformVariable("material.specular");
+	initUniformVariable("material.shininess");
 
-	InitUniformVariable("light.ambient");
-	InitUniformVariable("light.diffuse");
-	InitUniformVariable("light.specular");
-	InitUniformVariable("light.position");
+	initUniformVariable("light.ambient");
+	initUniformVariable("light.diffuse");
+	initUniformVariable("light.specular");
+	initUniformVariable("light.position");
 
-	InitUniformVariable("pointLightNum");
-	InitUniformVariable("dirLightNum");
+	initUniformVariable("pointLightNum");
+	initUniformVariable("dirLightNum");
 
 }
 Shader::~Shader() 
 {
 }
-void Shader::UseProgram() 
+void Shader::useProgram() 
 {
 	glUseProgram(m_programID);
 }
-void Shader::UnuseProgram()
+void Shader::unuseProgram()
 {
 	glUseProgram(0);
 }
-void Shader::InitUniformVariable(std::string name) {
+void Shader::initUniformVariable(std::string name) {
 	m_uniforms[name] = glGetUniformLocation(m_programID, name.c_str());
 }
 template<typename T>

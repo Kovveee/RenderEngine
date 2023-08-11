@@ -31,38 +31,23 @@ Texture::Texture(std::string imagePath, std::string type) :
 	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_image_free(data);
 }
-Texture::~Texture()
-{
-}
-void Texture::Bind()
+void Texture::bind()
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_textureID);
 }
-void Texture::Bind(unsigned int slot)
+void Texture::bind(unsigned int slot)
 {
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, m_textureID);
 }
-void Texture::UnBind()
+void Texture::unBind()
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
-void Texture::UnBind(unsigned int slot)
+void Texture::unBind(unsigned int slot)
 {
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, 0);
-}
-const std::string Texture::GetType()
-{
-	return m_type;
-}
-unsigned int Texture::GetID()
-{
-	return m_textureID;
-}
-const std::string Texture::GetPath()
-{
-	return m_path;
 }

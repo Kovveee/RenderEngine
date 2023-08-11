@@ -1,32 +1,19 @@
-#include "Camera.h"
+#include "EditorCamera.h"
 
-Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp):
-	m_cameraPos(cameraPos), m_cameraFront(cameraFront), m_cameraUp(cameraUp)
+EditorCamera::EditorCamera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp):
+	Camera(cameraPos,cameraFront, cameraUp)
 {
 	m_lastX = 0;
 	m_lastY = 0;
-	m_yaw = YAW;
-	m_pitch = PITCH;
-	m_speed = SPEED;
-	m_sensitivity = SENSITIVITY;
-	m_firstMove = true;
+	m_yaw = -90.f;
+	m_pitch = 0.f;
+	m_speed = 2.5f;
+	m_sensitivity = 0.05f;
 }
-Camera::~Camera()
-{
-}
-void Camera::Update(GLFWwindow* window, float deltaTime)
-{
-	MouseInputHandler(window);
-	KeyboardInputHandler(window, deltaTime);
-}
-glm::mat4 Camera::GetLookAt() 
-{
-	return glm::lookAt(m_cameraPos, m_cameraFront + m_cameraPos, m_cameraUp);
-}
-void Camera::MouseInputHandler(GLFWwindow* window)
+void EditorCamera::Update(GLFWwindow* window, float deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
-	{ 
+	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		double xPos, yPos;
 		glfwGetCursorPos(window, &xPos, &yPos);
@@ -61,9 +48,6 @@ void Camera::MouseInputHandler(GLFWwindow* window)
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		m_firstMove = true;
 	}
-}
-void Camera::KeyboardInputHandler(GLFWwindow* window, float deltaTime) 
-{
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		m_cameraPos += m_speed * deltaTime * m_cameraFront;
@@ -80,7 +64,4 @@ void Camera::KeyboardInputHandler(GLFWwindow* window, float deltaTime)
 	{
 		m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_speed * deltaTime;
 	}
-}
-glm::vec3 Camera::GetPos() {
-	return m_cameraPos;
 }

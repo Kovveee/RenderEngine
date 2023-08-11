@@ -10,9 +10,9 @@ class VertexArray
 public:
 	VertexArray();
 	~VertexArray();
-	void Bind();
-	void Unbind();
-	void InitVertexArray();
+	void bind();
+	void unbind();
+	void initVertexArray();
 private:
 	GLuint m_vaoID;
 };

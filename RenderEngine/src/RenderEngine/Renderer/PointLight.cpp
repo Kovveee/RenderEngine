@@ -14,16 +14,16 @@ PointLight::~PointLight()
 void PointLight::SetInShader(Shader* shader)
 {
 	
-	shader->UseProgram();
+	shader->useProgram();
 	SetColors(shader);
-	shader->InitUniformVariable(m_name +".position");
-	shader->InitUniformVariable(m_name + ".constant");
-	shader->InitUniformVariable(m_name + ".linear");
-	shader->InitUniformVariable(m_name + ".quadratic");
+	shader->initUniformVariable(m_name +".position");
+	shader->initUniformVariable(m_name + ".constant");
+	shader->initUniformVariable(m_name + ".linear");
+	shader->initUniformVariable(m_name + ".quadratic");
 	shader->setLightColor(m_name, m_ambient, m_diffuse, m_diffuse);
 	shader->setUniform((m_name + ".position").c_str(), m_position);
 	shader->setUniform((m_name + ".constant").c_str(), m_constant);
 	shader->setUniform((m_name + ".linear").c_str(), m_linear);
 	shader->setUniform((m_name + ".quadratic").c_str(), m_quadratic);
-	shader->UnuseProgram();
+	shader->unuseProgram();
 }

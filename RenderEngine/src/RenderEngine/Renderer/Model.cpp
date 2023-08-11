@@ -15,7 +15,8 @@ Model::Model(const std::string modelName , const std::string filePath):
 		return;
 	}
 
-	ProcessNode(scene->mRootNode,scene);	 
+	ProcessNode(scene->mRootNode,scene);	
+	collider.BuildCollider(positions);
 }
 Model::~Model()
 {
@@ -66,7 +67,7 @@ bool Model::isTextureLoaded(aiString name, Mesh* mesh)
 {
 	for(Texture* tex: mesh->textures)
 	{
-		if (tex->GetPath() == name.C_Str())
+		if (tex->getPath() == name.C_Str())
 			return true;
 	}
 	return false;
@@ -101,6 +102,7 @@ bool Model::isTextureLoaded(aiString name, Mesh* mesh)
 			texture.y = mesh->mTextureCoords[0][i].y;
 			vertex.texture = texture;
 		}
+		positions.push_back(vertex.position);
 		meshToAdd->vertices.push_back(vertex);
 	}
 	for(unsigned int i = 0; i < mesh->mNumFaces; ++i)
@@ -120,42 +122,50 @@ bool Model::isTextureLoaded(aiString name, Mesh* mesh)
 
 void Model::Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 cameraPos)
 {
-	shader->UseProgram();
+	shader->useProgram();
 	shader->setCameraPos(cameraPos);
-	glm::mat4 world = glm::translate(m_translation) * (glm::rotate(glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f)) * glm::rotate(glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f)) * glm::rotate(glm::radians(m_rotation.x), glm::vec3(1.f, 0.f,0.f)))  * glm::scale(m_scale) * glm::mat4(1);
-	shader->setWVP(world, view, proj);
+	glm::vec4 transformTemp = glm::vec4(1) * glm::translate(m_translation) * (glm::rotate(glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f)) * glm::rotate(glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f)) * glm::rotate(glm::radians(m_rotation.x), glm::vec3(1.f, 0.f, 0.f))) * glm::scale(m_scale) * glm::mat4(1);
+	
+	m_world = glm::translate(m_translation) * (glm::rotate(glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f)) * glm::rotate(glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f)) * glm::rotate(glm::radians(m_rotation.x), glm::vec3(1.f, 0.f, 0.f))) * glm::scale(m_scale) * glm::mat4(1);
+	m_transform = glm::vec3(transformTemp.x, transformTemp.y, transformTemp.z);
+	shader->setWVP(m_world, view, proj);
 
 
 	for(unsigned int i = 0; i < meshes.size(); ++i)
 	{
 		for (unsigned int j = 0; j < meshes[i]->textures.size(); ++j)
 		{
-			if (meshes[i]->textures[j]->GetType() == "diffuse")
+			if (meshes[i]->textures[j]->getType() == "diffuse")
 			{
-				shader->InitUniformVariable("material.diffuse");
+				shader->initUniformVariable("material.diffuse");
 				shader->setUniform("material.diffuse", 0);
-				meshes[i]->textures[j]->Bind(j);
+				meshes[i]->textures[j]->bind(j);
 			}
 			else
 			{
-				shader->InitUniformVariable("material.specular");
+				shader->initUniformVariable("material.specular");
 				shader->setUniform("material.specular", 1);
-				meshes[i]->textures[j]->Bind(j);
+				meshes[i]->textures[j]->bind(j);
 			}
 		}
-		meshes[i]->vao.Bind();
+		meshes[i]->vao.bind();
 		glDrawElements(GL_TRIANGLES, meshes[i]->indices.size(), GL_UNSIGNED_INT, NULL);
 		for (unsigned int j = 0; j < meshes[i]->textures.size(); ++j)
 		{
-			meshes[i]->textures[j]->UnBind(j);
+			meshes[i]->textures[j]->unBind(j);
 		}
 		glBindVertexArray(0);
 	}
-
-	shader->UnuseProgram();
-}
-std::string Model::GetName() const
-{
-	return m_name;
-}
+	positions.clear();
+	for (Mesh* mesh : meshes)
+	{
+		for (int i = 0; i < mesh->vertices.size(); ++i)
+		{
+			glm::vec4 vertex = m_world * glm::vec4(mesh->vertices[i].position.x, mesh->vertices[i].position.y, mesh->vertices[i].position.z, 1);
+			positions.push_back(glm::vec3(vertex.x, vertex.y, vertex.z));
+		}
+	}
+	collider.BuildCollider(positions);
+	shader->unuseProgram();
+}	
 

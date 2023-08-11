@@ -9,9 +9,9 @@ class VertexBuffer
 public:
 	VertexBuffer();
 	~VertexBuffer();
-	void Bind();
-	void Unbind();
-	void SetBufferData(const unsigned int count, const Vertex* vertex);
+	void bind();
+	void unbind();
+	void setBufferData(const unsigned int count, const Vertex* vertex);
 private:
 	GLuint m_bufferID;
 

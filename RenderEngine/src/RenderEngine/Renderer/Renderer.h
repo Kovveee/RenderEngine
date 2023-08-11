@@ -1,10 +1,5 @@
 #pragma once
 
-//imGUI
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 // OpenGL
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -32,6 +27,8 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "LightSource.h"
+#include "EditorCamera.h"
+#include "EditorGUI.h"
 
 namespace RenderEngine 
 {
@@ -54,7 +51,13 @@ namespace RenderEngine
 
 		GLFWwindow* m_window;
 
-		Shader* shaderProgram;
+		EditorGUI* m_editorGUI;
+
+		Shader* m_shaderProgram;
+		Shader* m_outlineShader;
+		Shader* m_planeShader;
+
+		glm::vec3 m_direction = glm::vec3(1,1,1);
 
 		int m_screenWidth;
 		int m_screenHeight;
@@ -73,12 +76,10 @@ namespace RenderEngine
 		const std::string textureFolderPath = "src\\Textures\\";
 
 	
-		float deltaTime = 0;
-		float lastFrame = 0;
+		float m_deltaTime = 0;
+		float m_lastFrame = 0;
 
-		void MainWindow();
-		void PropertyWindow(Model* model);
-		
+		void MagicCube(Model* cube, Model* plane);		
 	};
 }
 

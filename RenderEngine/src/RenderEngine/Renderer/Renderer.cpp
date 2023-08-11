@@ -5,27 +5,14 @@ namespace RenderEngine
 	Renderer::Renderer(GLFWwindow *window, int screenWidth, int screenHeight)
 		: m_window(window),m_screenWidth(screenWidth), m_screenHeight(screenHeight)
 	{
-
-		// Init imGUI
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO();
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-
-		// Setup Platform/Renderer backends
-		ImGui_ImplGlfw_InitForOpenGL(m_window, true);
-		ImGui_ImplOpenGL3_Init("#version 330 core");
-
 		camera = nullptr;
-		shaderProgram = nullptr;
-		Init();
-		
+		m_shaderProgram = nullptr;
+		Init();	
 	}
 
 	Renderer::~Renderer()
 	{
-		delete shaderProgram;
+		delete m_shaderProgram;
 		delete camera;
 		for(Model* model: m_models)
 		{
@@ -38,18 +25,27 @@ namespace RenderEngine
 	}
 	void Renderer::Init()
 	{
-		shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
+		m_shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
+		m_outlineShader = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "outline.frag");
+		m_planeShader = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "planeColor.frag");
+
+		m_outlineShader->useProgram();
+		m_outlineShader->initUniformVariable("color");
+		m_outlineShader->unuseProgram();
 		
 		m_lights.push_back(new PointLight(m_pointLightNum++, glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 5.f)));
 		m_lights.push_back(new DirectionalLight(m_dirLightNum++, glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, -5.f, 0.f)));
 
-		m_models.push_back(new Model("cube", "src\\Models\\cube\\untitled2.obj"));
+		m_models.push_back(new Model("cube1", "src\\Models\\cube\\untitled2.obj"));
+		m_models.push_back(new Model("cube2", "src\\Models\\cube\\untitled2.obj"));
 
-		shaderProgram->UseProgram();
-		shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
-		shaderProgram->UnuseProgram();
+		m_shaderProgram->useProgram();
+		m_shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
+		m_shaderProgram->unuseProgram();
 
-		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
+		m_editorGUI = new EditorGUI(m_window);
+
+		camera = new EditorCamera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
 	}
 	void Renderer::Render()
 	{
@@ -65,46 +61,45 @@ namespace RenderEngine
 			glfwGetFramebufferSize(m_window, &m_screenWidth, &m_screenHeight);
 			glViewport(0, 0, m_screenWidth, m_screenHeight);
 
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
-
-			MainWindow();
 
 			float currentFrame = glfwGetTime();
-			deltaTime = currentFrame - lastFrame;
-			lastFrame = currentFrame;
+			m_deltaTime = currentFrame - m_lastFrame;
+			m_lastFrame = currentFrame;
 
-			camera->Update(m_window, deltaTime);
+			camera->Update(m_window, m_deltaTime);
 
-			shaderProgram->UseProgram();
-			shaderProgram->setUniform("pointLightNum", m_pointLightNum);
-			shaderProgram->setUniform("dirLightNum", m_dirLightNum);
-			shaderProgram->UnuseProgram();
+			m_shaderProgram->useProgram();
+			m_shaderProgram->setUniform("pointLightNum", m_pointLightNum);
+			m_shaderProgram->setUniform("dirLightNum", m_dirLightNum);
+			m_shaderProgram->unuseProgram();
 
-			for(int i = 0; i < m_lights.size(); ++i)
+			for (int i = 0; i < m_lights.size(); ++i)
 			{
-				m_lights[i]->SetInShader(shaderProgram);
+				m_lights[i]->SetInShader(m_shaderProgram);
 			}
-			for(int i = 0; i < m_models.size();++i)
-			{
-				m_models[i]->Draw(shaderProgram, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
-			}
+			for (Model* model : m_models) {
+				if (model->GetName() == "cube1")
+				{
+					*model->GetTranslation() = glm::vec3(0, 0, 5);
+					model->Draw(m_planeShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+				}
+				model->Draw(m_shaderProgram, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+			}			
+			
+			if (m_models[0]->collider.CheckCollision(m_models[1]->collider))
+				std::cout << "Collision" << std::endl;
 
 			KeyboardInputHandler();
 			MouseInputHandler();
 
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+			m_editorGUI->enableGui();
+			m_editorGUI->MainWindow(m_models);
+			m_editorGUI->drawGui();
+			
 			glfwSwapBuffers(m_window);
 		}
-
+		m_editorGUI->destroyGui();
 		glfwTerminate();
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();
-
 		return;
 	}
 	void Renderer::KeyboardInputHandler()
@@ -113,37 +108,56 @@ namespace RenderEngine
 	}
 	void Renderer::MouseInputHandler()
 	{
-	}
 
-	void Renderer::MainWindow()
+	}
+	void Renderer::MagicCube(Model* cube, Model* plane)
 	{
-		ImGui::Begin("Main window");
-		static int item_current_idx = 0;
-		if (ImGui::BeginListBox("Objects"))
+		m_planeShader->useProgram();
+		m_planeShader->setUniform("color", glm::vec3(1, 1, 1));
+		m_planeShader->unuseProgram();
+
+		glDisable(GL_DEPTH_TEST);
+		cube->Draw(m_planeShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+		glEnable(GL_DEPTH_TEST);
+
+		glEnable(GL_STENCIL_TEST);
+		glClear(GL_STENCIL_BUFFER_BIT);
+		float angle = 0;
+
+		
+		for (int i = 0; i < 4; ++i)
 		{
-			for (int n = 0; n < m_models.size(); n++)
-			{
-				const bool is_selected = (item_current_idx == n);
-				if (ImGui::Selectable(m_models[n]->GetName().c_str(), is_selected))
-					item_current_idx = n;
-
-				if (is_selected)
-				{
-					ImGui::SetItemDefaultFocus();
-					PropertyWindow(m_models[n]);
-				}
-					
-			}
-			ImGui::EndListBox();
+			glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+			glStencilFunc(GL_EQUAL, 0, 0xFF);
+			glDisable(GL_DEPTH_TEST);
+			glColorMask(0, 0, 0, 0);
+			if(i == 0)
+				*plane->GetTranslation() = glm::vec3(1, 0, 0);
+			else if(i == 1)
+				*plane->GetTranslation() = glm::vec3(0, 0, -1);
+			else if (i == 2)
+				*plane->GetTranslation() = glm::vec3(-1, 0, 0);
+			else if (i == 3)
+				*plane->GetTranslation() = glm::vec3(0, 0, 1);
+			*plane->GetScale() = glm::vec3(0.7, 0.7, 0.7);
+			*plane->GetRotation() = glm::vec3(0, angle, 0);
+			angle += 90;
+			if (angle == 360)
+				angle = 0;
+			plane->Draw(m_planeShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+			glColorMask(1, 1, 1, 1);
+			glEnable(GL_DEPTH_TEST);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+			glStencilFunc(GL_EQUAL, 1, 0xFF);
+			m_outlineShader->useProgram();
+			m_outlineShader->setUniform("color", glm::vec3(1, 1, 0));
+			m_outlineShader->unuseProgram();
+			*m_models[i]->GetTranslation() = glm::vec3(0, 0, 0);
+			*m_models[i]->GetScale() = glm::vec3(0.5, 0.5, 0.5);
+			m_models[i]->Draw(m_outlineShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+			*m_models[i]->GetScale() = glm::vec3(1, 1, 1);
+			glClear(GL_STENCIL_BUFFER_BIT);
 		}
-		ImGui::End();
-	}
-	void Renderer::PropertyWindow(Model* model)
-	{
-		ImGui::Begin((model->GetName() + " properties").c_str());
-		ImGui::DragFloat3("Position", (float*)model->GetTranslation(), 1.f, -1000.f, 1000.f);
-		ImGui::DragFloat3("Rotation", (float*)model->GetRotation(), 1.f, -360.f, 360.f);
-		ImGui::DragFloat3("Scale", (float*)model->GetScale(), 0.001f, 0.001f, 1000.f);
-		ImGui::End();
+		glDisable(GL_STENCIL_TEST);
 	}
 }

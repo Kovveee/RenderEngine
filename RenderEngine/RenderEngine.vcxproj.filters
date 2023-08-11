@@ -45,7 +45,7 @@
     <ClInclude Include="src\RenderEngine\Renderer\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RenderEngine\Renderer\Camera.h">
+    <ClInclude Include="src\RenderEngine\Renderer\EditorCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\IMGUI\imgui_impl_opengl3_loader.h">
@@ -93,6 +93,15 @@
     <ClInclude Include="src\RenderEngine\Renderer\PointLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\Collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\EditorGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Application.cpp">
@@ -113,7 +122,7 @@
     <ClCompile Include="src\RenderEngine\Renderer\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RenderEngine\Renderer\Camera.cpp">
+    <ClCompile Include="src\RenderEngine\Renderer\EditorCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendor\IMGUI\imgui.cpp">
@@ -152,9 +161,17 @@
     <ClCompile Include="src\RenderEngine\Renderer\PointLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderEngine\Renderer\Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderEngine\Renderer\EditorGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\outline.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\planeColor.frag" />
   </ItemGroup>
 </Project>

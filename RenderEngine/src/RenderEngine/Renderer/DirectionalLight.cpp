@@ -12,10 +12,10 @@ DirectionalLight::~DirectionalLight()
 }
 void DirectionalLight::SetInShader(Shader* shader)
 {
-	shader->UseProgram();
+	shader->useProgram();
 	SetColors(shader);
-	shader->InitUniformVariable(m_name + ".direction");
+	shader->initUniformVariable(m_name + ".direction");
 	shader->setLightColor(m_name, m_ambient, m_diffuse, m_diffuse);
 	shader->setUniform((m_name + ".direction").c_str(), m_direction);
-	shader->UnuseProgram();
+	shader->unuseProgram();
 }

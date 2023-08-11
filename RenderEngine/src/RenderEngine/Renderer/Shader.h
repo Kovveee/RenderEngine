@@ -15,10 +15,10 @@ class Shader
 public:
 	Shader(std::string vertexPath, std::string fragmentPath);
 	~Shader();
-	void UseProgram();
-	void UnuseProgram();
+	void useProgram();
+	void unuseProgram();
 
-	void InitUniformVariable(std::string name);
+	void initUniformVariable(std::string name);
 	template<typename T>
 	void setUniform(const char* name, T value);
 	template<>
@@ -40,8 +40,6 @@ public:
 	void setMaterial(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, float shininess);
 	void setLightColor(std::string name, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor);
 	void setCameraPos(glm::vec3 cameraPos);
-
-
 
 private:
 	GLuint m_programID;

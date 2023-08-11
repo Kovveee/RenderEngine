@@ -24,9 +24,9 @@ protected:
 
 	void SetColors(Shader* shader)
 	{
-		shader->InitUniformVariable(m_name + ".ambient");
-		shader->InitUniformVariable(m_name + ".diffuse");
-		shader->InitUniformVariable(m_name + ".specular");
+		shader->initUniformVariable(m_name + ".ambient");
+		shader->initUniformVariable(m_name + ".diffuse");
+		shader->initUniformVariable(m_name + ".specular");
 	}
 private:
 	
