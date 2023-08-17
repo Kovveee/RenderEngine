@@ -1,46 +1,53 @@
 #include "Application.h"
 
+
+#define BIND_EVENT(x) std::bind(&Application::x, this, std::placeholders::_1)
+
 namespace RenderEngine {
 	Application::Application()
 	{
-		// Init openGL
-		if (!glfwInit())
-			return;
-
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-		int windowWidth = 800;
-		int windowHeight = 600;
-
-		window = glfwCreateWindow(windowWidth, windowHeight, "Main Window", NULL, NULL);
-
-		if (!window)
-		{
-			glfwTerminate();
-			return;
-		}
-		glfwMakeContextCurrent(window);
-
-		glfwSwapInterval(1);
+		WindowData data = {"Main window",800,600};
+		m_window = new Window(data);
 
 		glewExperimental = GL_TRUE;
 
 		if (GLEW_OK != glewInit())
 			return;
+		m_renderer = new Renderer(m_window->GetWindowPtr(), m_window->GetWidth(), m_window->GetHeight());
+		m_isRunning = true;
 
-		m_renderer = new Renderer(window, windowWidth, windowHeight);
+		m_window->SetEventCallback(BIND_EVENT(OnEvent));
 	}
 
 	Application::~Application()
 	{
 		delete m_renderer;
+		delete m_window;
 	}
 
 	void Application::Run() {
-		//m_renderer->AddModel("cube2", "src\\Models\\cube\\untitled.obj");
-		m_renderer->Render();
+
+		while(m_isRunning)
+		{
+			m_window->Update();
+			m_renderer->Render();
+		}
+	}
+	void Application::OnEvent(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT(WindowResize));
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT(WindowClose));
+	}
+	bool Application::WindowClose(WindowCloseEvent& e)
+	{
+		m_isRunning = false;
+		return true;
+	}
+	bool Application::WindowResize(WindowResizeEvent& e)
+	{
+		std::cout << "Resize" << std::endl;
+		return true;
 	}
 }
 

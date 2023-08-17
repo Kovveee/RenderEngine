@@ -91,6 +91,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderEngine\Event\Event.h" />
+    <ClInclude Include="src\RenderEngine\Event\InputEvents.h" />
+    <ClInclude Include="src\RenderEngine\Event\WindowEvents.h" />
+    <ClInclude Include="src\RenderEngine\Renderer\KeyCodes.h" />
+    <ClInclude Include="src\RenderEngine\Renderer\MouseCodes.h" />
     <ClInclude Include="src\RenderEngine\Renderer\EditorGUI.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Camera.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Collider.h" />
@@ -120,6 +125,7 @@
     <ClInclude Include="vendor\IMGUI\imstb_textedit.h" />
     <ClInclude Include="vendor\IMGUI\imstb_truetype.h" />
     <ClInclude Include="vendor\STB_IMAGE\stb_image.h" />
+    <ClInclude Include="src\RenderEngine\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Renderer\EditorGUI.cpp" />
@@ -143,6 +149,7 @@
     <ClCompile Include="vendor\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="vendor\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="vendor\STB_IMAGE\stb_image.cpp" />
+    <ClCompile Include="src\RenderEngine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />

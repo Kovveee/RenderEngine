@@ -22,6 +22,8 @@ namespace RenderEngine
 		{
 			delete light;
 		}
+		m_editorGUI->destroyGui();
+
 	}
 	void Renderer::Init()
 	{
@@ -49,58 +51,49 @@ namespace RenderEngine
 	}
 	void Renderer::Render()
 	{
-		while (!glfwWindowShouldClose(m_window))
+		glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
+		glfwGetFramebufferSize(m_window, &m_screenWidth, &m_screenHeight);
+		glViewport(0, 0, m_screenWidth, m_screenHeight);
+
+
+		float currentFrame = glfwGetTime();
+		m_deltaTime = currentFrame - m_lastFrame;
+		m_lastFrame = currentFrame;
+
+		camera->Update(m_window, m_deltaTime);
+
+		m_shaderProgram->useProgram();
+		m_shaderProgram->setUniform("pointLightNum", m_pointLightNum);
+		m_shaderProgram->setUniform("dirLightNum", m_dirLightNum);
+		m_shaderProgram->unuseProgram();
+
+		for (int i = 0; i < m_lights.size(); ++i)
 		{
-			glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
-			glfwPollEvents();
-
-			glfwGetFramebufferSize(m_window, &m_screenWidth, &m_screenHeight);
-			glViewport(0, 0, m_screenWidth, m_screenHeight);
-
-
-			float currentFrame = glfwGetTime();
-			m_deltaTime = currentFrame - m_lastFrame;
-			m_lastFrame = currentFrame;
-
-			camera->Update(m_window, m_deltaTime);
-
-			m_shaderProgram->useProgram();
-			m_shaderProgram->setUniform("pointLightNum", m_pointLightNum);
-			m_shaderProgram->setUniform("dirLightNum", m_dirLightNum);
-			m_shaderProgram->unuseProgram();
-
-			for (int i = 0; i < m_lights.size(); ++i)
-			{
-				m_lights[i]->SetInShader(m_shaderProgram);
-			}
-			for (Model* model : m_models) {
-				if (model->GetName() == "cube1")
-				{
-					*model->GetTranslation() = glm::vec3(0, 0, 5);
-					model->Draw(m_planeShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
-				}
-				model->Draw(m_shaderProgram, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
-			}			
-			
-			if (m_models[0]->collider.CheckCollision(m_models[1]->collider))
-				std::cout << "Collision" << std::endl;
-
-			KeyboardInputHandler();
-			MouseInputHandler();
-
-			m_editorGUI->enableGui();
-			m_editorGUI->MainWindow(m_models);
-			m_editorGUI->drawGui();
-			
-			glfwSwapBuffers(m_window);
+			m_lights[i]->SetInShader(m_shaderProgram);
 		}
-		m_editorGUI->destroyGui();
-		glfwTerminate();
-		return;
+		for (Model* model : m_models) {
+			if (model->GetName() == "cube1")
+			{
+				*model->GetTranslation() = glm::vec3(0, 0, 5);
+				model->Draw(m_planeShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+			}
+			model->Draw(m_shaderProgram, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+		}
+
+		if (m_models[0]->collider.CheckCollision(m_models[1]->collider))
+			std::cout << "Collision" << std::endl;
+
+		KeyboardInputHandler();
+		MouseInputHandler();
+
+		m_editorGUI->enableGui();
+		m_editorGUI->MainWindow(m_models);
+		m_editorGUI->drawGui();
 	}
 	void Renderer::KeyboardInputHandler()
 	{

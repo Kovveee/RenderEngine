@@ -56,6 +56,8 @@ public:
 	glm::vec3* GetRotation() { return &m_rotation; }
 	glm::vec3* GetScale() { return &m_scale; }
 	glm::mat4 GetWorld() { return m_world; }
+	virtual void HandleMouseInput() {};
+	virtual void HandleKeyInput() {};
 	Collider collider;
 
 private:
