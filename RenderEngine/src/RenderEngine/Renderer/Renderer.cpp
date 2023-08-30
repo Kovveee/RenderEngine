@@ -2,8 +2,8 @@
 
 namespace RenderEngine
 {
-	Renderer::Renderer(GLFWwindow *window, int screenWidth, int screenHeight)
-		: m_window(window),m_screenWidth(screenWidth), m_screenHeight(screenHeight)
+	Renderer::Renderer(GLFWwindow *window, int screenWidth, int screenHeight, std::vector<Model*> &models)
+		: m_window(window),m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_models(models)
 	{
 		camera = nullptr;
 		m_shaderProgram = nullptr;
@@ -38,9 +38,6 @@ namespace RenderEngine
 		m_lights.push_back(new PointLight(m_pointLightNum++, glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 5.f)));
 		m_lights.push_back(new DirectionalLight(m_dirLightNum++, glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, -5.f, 0.f)));
 
-		m_models.push_back(new Model("cube1", "src\\Models\\cube\\untitled2.obj"));
-		m_models.push_back(new Model("cube2", "src\\Models\\cube\\untitled2.obj"));
-
 		m_shaderProgram->useProgram();
 		m_shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
 		m_shaderProgram->unuseProgram();
@@ -48,6 +45,7 @@ namespace RenderEngine
 		m_editorGUI = new EditorGUI(m_window);
 
 		camera = new EditorCamera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
+		gameCamera = new GameCamera();
 	}
 	void Renderer::Render()
 	{
@@ -65,8 +63,8 @@ namespace RenderEngine
 		m_deltaTime = currentFrame - m_lastFrame;
 		m_lastFrame = currentFrame;
 
-		camera->Update(m_window, m_deltaTime);
-
+		//camera->Update(m_window, m_deltaTime);
+		gameCamera->Update(m_deltaTime, m_models[0]);
 		m_shaderProgram->useProgram();
 		m_shaderProgram->setUniform("pointLightNum", m_pointLightNum);
 		m_shaderProgram->setUniform("dirLightNum", m_dirLightNum);
@@ -75,18 +73,11 @@ namespace RenderEngine
 		for (int i = 0; i < m_lights.size(); ++i)
 		{
 			m_lights[i]->SetInShader(m_shaderProgram);
+			m_lights[i]->SetInShader(m_shaderProgram);
 		}
 		for (Model* model : m_models) {
-			if (model->GetName() == "cube1")
-			{
-				*model->GetTranslation() = glm::vec3(0, 0, 5);
-				model->Draw(m_planeShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
-			}
-			model->Draw(m_shaderProgram, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+			model->Draw(m_planeShader, gameCamera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 440.f), gameCamera->GetPos());
 		}
-
-		if (m_models[0]->collider.CheckCollision(m_models[1]->collider))
-			std::cout << "Collision" << std::endl;
 
 		KeyboardInputHandler();
 		MouseInputHandler();

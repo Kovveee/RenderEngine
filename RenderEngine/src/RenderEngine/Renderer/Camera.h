@@ -8,6 +8,7 @@
 class Camera
 {
 public:
+	Camera() {};
 	Camera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp)
 		:m_cameraPos(cameraPos), m_cameraFront(cameraFront), m_cameraUp(cameraUp), m_firstMove(true) {}
 	virtual void Update(GLFWwindow* window, float deltaTime) = 0;

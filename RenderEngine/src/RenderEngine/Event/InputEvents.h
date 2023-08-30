@@ -60,6 +60,7 @@ class KeyPressedEvent: public Event
 public:
 	KeyPressedEvent(KeyCode code, bool isRepeat)
 		: m_code(code), m_isRepeat(isRepeat){}
+	KeyCode GetKey() { return m_code; }
 	SET_FUNCTIONS(KeyPressed);
 protected:
 	KeyCode m_code;
@@ -71,6 +72,7 @@ public:
 	KeyReleasedEvent(KeyCode code)
 		: m_code(code) {}
 	SET_FUNCTIONS(KeyReleased);
+	KeyCode GetKey() { return m_code; }
 protected:
 	KeyCode m_code;
 };

@@ -29,6 +29,7 @@
 #include "LightSource.h"
 #include "EditorCamera.h"
 #include "EditorGUI.h"
+#include "GameCamera.h"
 
 namespace RenderEngine 
 {
@@ -36,14 +37,14 @@ namespace RenderEngine
 	class Renderer
 	{
 	public:
-		Renderer(GLFWwindow* window, int screenWidth, int screenHeight);
+		Renderer(GLFWwindow* window, int screenWidth, int screenHeight, std::vector<Model*> &models);
 		~Renderer();
 		void Init();
 		void Render();
 		void KeyboardInputHandler();
 		void MouseInputHandler();
 	private:
-		std::vector<Model*> m_models;
+		std::vector<Model*>& m_models;
 		std::vector<LightSource*> m_lights;
 
 		int m_dirLightNum = 0;
@@ -63,6 +64,7 @@ namespace RenderEngine
 		int m_screenHeight;
 
 		Camera* camera;
+		GameCamera* gameCamera;		
 
 		// GUI variables
 		glm::vec3 m_cubeColor = glm::vec3(1.f);

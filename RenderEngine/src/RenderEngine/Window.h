@@ -28,7 +28,7 @@ public:
 	int GetWidth() { return data.width; }
 	int GetHeight() { return data.height; }
 	std::string GetTitle() { return data.title; }
-	GLFWwindow* GetWindowPtr() { return m_window; }
+	GLFWwindow* GetNativeWindow() { return m_window; }
 private:
 	GLFWwindow* m_window;
 	WindowData data;

@@ -43,25 +43,28 @@ void EditorCamera::Update(GLFWwindow* window, float deltaTime)
 		direction.y = sin(glm::radians(m_pitch));
 		direction.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 		m_cameraFront = glm::normalize(direction);
+
+
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			m_cameraPos += m_speed * deltaTime * m_cameraFront;
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			m_cameraPos -= m_speed * deltaTime * m_cameraFront;
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		{
+			m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_speed * deltaTime;
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		{
+			m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_speed * deltaTime;
+		}
 	}
 	else {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		m_firstMove = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	{
-		m_cameraPos += m_speed * deltaTime * m_cameraFront;
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	{
-		m_cameraPos -= m_speed * deltaTime * m_cameraFront;
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	{
-		m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_speed * deltaTime;
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	{
-		m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_speed * deltaTime;
-	}
+	
 }
