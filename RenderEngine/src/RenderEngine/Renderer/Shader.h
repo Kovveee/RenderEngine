@@ -40,6 +40,7 @@ public:
 	void setMaterial(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, float shininess);
 	void setLightColor(std::string name, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor);
 	void setCameraPos(glm::vec3 cameraPos);
+	void BindUniformBlock(unsigned int blockIndex, std::string name);
 
 private:
 	GLuint m_programID;

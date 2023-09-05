@@ -24,6 +24,8 @@ namespace RenderEngine {
 		m_models.push_back(new Model("mech", "src\\Models\\mech\\mech.obj"));
 		m_models.push_back(new Model("cube1", "src\\Models\\cube\\untitled2.obj"));
 		m_models.push_back(new Model("cube2", "src\\Models\\cube\\untitled2.obj"));
+		m_models.push_back(new Model("ground", "src\\Models\\plane\\plane.obj"));
+
 		m_window->SetEventCallback(BIND_EVENT(OnEvent));
 	}
 
@@ -66,8 +68,6 @@ namespace RenderEngine {
 			if (mousePos.x > 0)
 				rotationAngle = -rotationAngle;
 			
-			std::cout << glm::degrees(rotationAngle) << " " << mousePos.x <<" " << mousePos.y << std::endl;
-
 			*m_models[0]->GetRotation() = glm::vec3(0, glm::degrees(rotationAngle), 0);
 
 		}

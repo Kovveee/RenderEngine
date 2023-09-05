@@ -30,6 +30,8 @@
 #include "EditorCamera.h"
 #include "EditorGUI.h"
 #include "GameCamera.h"
+#include "Skybox.h"
+#include "UniformBuffer.h"
 
 namespace RenderEngine 
 {
@@ -58,6 +60,10 @@ namespace RenderEngine
 		Shader* m_outlineShader;
 		Shader* m_planeShader;
 
+		Skybox* m_skybox;
+
+		UniformBuffer m_matraciesUBO;
+
 		glm::vec3 m_direction = glm::vec3(1,1,1);
 
 		int m_screenWidth;
@@ -65,6 +71,8 @@ namespace RenderEngine
 
 		Camera* camera;
 		GameCamera* gameCamera;		
+
+		glm::mat4 m_projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
 
 		// GUI variables
 		glm::vec3 m_cubeColor = glm::vec3(1.f);
@@ -80,8 +88,22 @@ namespace RenderEngine
 	
 		float m_deltaTime = 0;
 		float m_lastFrame = 0;
-
+		float m_lastFpsFrame = 0;
 		void MagicCube(Model* cube, Model* plane);		
+
+		float fps = 0;
+
+		void GetFps()
+		{	
+			int numberOfFrames = 0;
+			fps++;
+			if(glfwGetTime() - m_lastFpsFrame >= 1.0)
+			{
+				std::cout << "FPS: " << fps << std::endl;
+				fps = 0;
+				m_lastFpsFrame += 1.0;
+			}
+		}
 	};
 }
 

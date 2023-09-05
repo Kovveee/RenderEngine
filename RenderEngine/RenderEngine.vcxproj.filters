@@ -126,6 +126,12 @@
     <ClInclude Include="src\RenderEngine\Renderer\GameCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\UniformBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Application.cpp">
@@ -200,11 +206,19 @@
     <ClCompile Include="src\RenderEngine\Renderer\GameCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderEngine\Renderer\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderEngine\Renderer\UniformBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\outline.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\planeColor.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\skybox.vert" />
+    <None Include="src\RenderEngine\Renderer\Shaders\skybox.frag" />
   </ItemGroup>
 </Project>

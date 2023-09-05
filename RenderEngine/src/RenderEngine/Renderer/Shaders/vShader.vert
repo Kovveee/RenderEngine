@@ -9,14 +9,25 @@ uniform mat4 viewMat;
 uniform mat4 projMat;
 uniform mat4 worldIT;
 
-out vec3 norm;
-out vec3 FragPos;
-out vec2 TexCoord;
+layout (std140) uniform Matrices
+{
+	mat4 projection;
+	mat4 view;
+};
+
+
+out vShaderOut
+{
+  vec3 norm;
+  vec3 FragPos;
+  vec2 TexCoord;
+} vOut;
+
 
 void main()
 {
-	gl_Position = projMat * viewMat * worldMat * vec4(Position,1.0);
-	norm = mat3(worldIT) * Normals;
-	FragPos =  (worldMat * vec4(Position,1.0)).xyz;
-	TexCoord = Texture;
+	gl_Position = projection * view * worldMat * vec4(Position,1.0);
+	vOut.norm = mat3(worldIT) * Normals;
+	vOut.FragPos =  (worldMat * vec4(Position,1.0)).xyz;
+	vOut.TexCoord = Texture;
 }

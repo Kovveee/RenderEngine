@@ -178,3 +178,9 @@ void Shader::setCameraPos(glm::vec3 cameraPos)
 {
 	setUniform("cameraPos", cameraPos);
 }
+
+void Shader::BindUniformBlock(unsigned int blockIndex, std::string name)
+{
+	unsigned int uniformBlockIndex = glGetUniformBlockIndex(m_programID, name.c_str());
+	glUniformBlockBinding(m_programID, uniformBlockIndex, blockIndex);
+}

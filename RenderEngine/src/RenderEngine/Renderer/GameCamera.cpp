@@ -9,7 +9,7 @@ GameCamera::GameCamera()
 }
 void GameCamera::Update(float deltaTime, Model* model)
 {
-	m_cameraPos = *model->GetTranslation() - glm::vec3(0, -150, 140);
+	m_cameraPos = *model->GetTranslation() - glm::vec3(0, -130, 120);
 }
 void GameCamera::Update(GLFWwindow* window, float deltaTime)
 {

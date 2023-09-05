@@ -33,9 +33,13 @@ void Window::Init(WindowData& props)
 
 	m_window = glfwCreateWindow(props.width, props.height, props.title.c_str(), NULL, NULL);
 
+	data.height = props.height;
+	data.width = props.width;
+	data.title = props.title;
+
 	glfwMakeContextCurrent(m_window);
 
-	SetVSync(true);
+	SetVSync(false);
 
 	glfwSetWindowUserPointer(m_window, &data);
 

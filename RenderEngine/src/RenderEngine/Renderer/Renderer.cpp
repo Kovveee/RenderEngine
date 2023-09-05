@@ -28,8 +28,13 @@ namespace RenderEngine
 	void Renderer::Init()
 	{
 		m_shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
+		m_shaderProgram->BindUniformBlock(0, "Matrices");
 		m_outlineShader = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "outline.frag");
+		m_outlineShader->BindUniformBlock(0, "Matrices");
 		m_planeShader = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "planeColor.frag");
+
+		m_matraciesUBO.SetBufferData(2 * sizeof(glm::mat4), 0);
+
 
 		m_outlineShader->useProgram();
 		m_outlineShader->initUniformVariable("color");
@@ -46,6 +51,19 @@ namespace RenderEngine
 
 		camera = new EditorCamera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
 		gameCamera = new GameCamera();
+
+		m_lastFpsFrame = glfwGetTime();
+
+		std::vector<std::string> skyboxTextures =
+		{
+			textureFolderPath + "skybox\\right.jpg",
+			textureFolderPath + "skybox\\left.jpg",
+			textureFolderPath + "skybox\\top.jpg",
+			textureFolderPath + "skybox\\bottom.jpg",
+			textureFolderPath + "skybox\\front.jpg",
+			textureFolderPath + "skybox\\back.jpg"
+		};
+		m_skybox = new Skybox(skyboxTextures);
 	}
 	void Renderer::Render()
 	{
@@ -58,6 +76,9 @@ namespace RenderEngine
 		glfwGetFramebufferSize(m_window, &m_screenWidth, &m_screenHeight);
 		glViewport(0, 0, m_screenWidth, m_screenHeight);
 
+		//GetFps();
+
+		m_skybox->Draw(gameCamera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f));
 
 		float currentFrame = glfwGetTime();
 		m_deltaTime = currentFrame - m_lastFrame;
@@ -65,6 +86,14 @@ namespace RenderEngine
 
 		//camera->Update(m_window, m_deltaTime);
 		gameCamera->Update(m_deltaTime, m_models[0]);
+
+		m_matraciesUBO.Bind();
+		glm::mat4 tmpProj = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 440.f);
+		m_matraciesUBO.SetUniform(0, sizeof(glm::mat4), glm::value_ptr(tmpProj));
+		glm::mat4 tmpCameraView = gameCamera->GetLookAt();
+		m_matraciesUBO.SetUniform(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(tmpCameraView));
+		m_matraciesUBO.UnBind();
+
 		m_shaderProgram->useProgram();
 		m_shaderProgram->setUniform("pointLightNum", m_pointLightNum);
 		m_shaderProgram->setUniform("dirLightNum", m_dirLightNum);
@@ -73,10 +102,9 @@ namespace RenderEngine
 		for (int i = 0; i < m_lights.size(); ++i)
 		{
 			m_lights[i]->SetInShader(m_shaderProgram);
-			m_lights[i]->SetInShader(m_shaderProgram);
 		}
 		for (Model* model : m_models) {
-			model->Draw(m_planeShader, gameCamera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 440.f), gameCamera->GetPos());
+			model->Draw(m_shaderProgram, gameCamera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 440.f), gameCamera->GetPos());
 		}
 
 		KeyboardInputHandler();
