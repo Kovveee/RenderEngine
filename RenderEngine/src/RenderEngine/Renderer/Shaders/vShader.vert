@@ -5,8 +5,6 @@ layout (location = 1) in vec3 Normals;
 layout (location = 2) in vec2 Texture;
 
 uniform mat4 worldMat;
-uniform mat4 viewMat;
-uniform mat4 projMat;
 uniform mat4 worldIT;
 
 layout (std140) uniform Matrices

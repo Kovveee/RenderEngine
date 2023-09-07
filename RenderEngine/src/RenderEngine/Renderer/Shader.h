@@ -40,10 +40,19 @@ public:
 	void setMaterial(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, float shininess);
 	void setLightColor(std::string name, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor);
 	void setCameraPos(glm::vec3 cameraPos);
+	void setWorldMat(glm::mat4 worldMat);
 	void BindUniformBlock(unsigned int blockIndex, std::string name);
+	void AttachGeometry(std::string geometryPath);
 
 private:
 	GLuint m_programID;
 	std::map<std::string, int> m_uniforms;
+	std::string m_vertexPath;
+	std::string m_fragmentPath;
+	std::string m_geometryPath;
+
+	bool m_isGeometryAttached = false;
+
+	void CompileShader();
 };
 

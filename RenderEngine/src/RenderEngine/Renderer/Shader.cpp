@@ -1,6 +1,34 @@
 #include "Shader.h"
 
 Shader::Shader(std::string vertexPath, std::string fragmentPath) 
+	: m_vertexPath(vertexPath), m_fragmentPath(fragmentPath)
+{
+	CompileShader();
+
+	initUniformVariable("worldMat");
+	initUniformVariable("worldIT");
+	initUniformVariable("projMat");
+	initUniformVariable("viewMat");
+	initUniformVariable("cameraPos");
+
+	initUniformVariable("material.ambient");
+	initUniformVariable("material.diffuse");
+	initUniformVariable("material.specular");
+	initUniformVariable("material.shininess");
+
+	initUniformVariable("light.ambient");
+	initUniformVariable("light.diffuse");
+	initUniformVariable("light.specular");
+	initUniformVariable("light.position");
+
+	initUniformVariable("pointLightNum");
+	initUniformVariable("dirLightNum");
+
+}
+Shader::~Shader() 
+{
+}
+void Shader::CompileShader()
 {
 	// Reading file and converting to char*
 	std::string vertexCode, fragmentCode;
@@ -9,9 +37,9 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 	vShaderFile.exceptions(std::ifstream::badbit);
 	fShaderFile.exceptions(std::ifstream::badbit);
 
-	vShaderFile.open(vertexPath);
-	fShaderFile.open(fragmentPath);
-	if(!vShaderFile || !fShaderFile)
+	vShaderFile.open(m_vertexPath);
+	fShaderFile.open(m_fragmentPath);
+	if (!vShaderFile || !fShaderFile)
 	{
 		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 		return;
@@ -32,11 +60,47 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 	const char* vShaderCode = vertexCode.c_str();
 	const char* fShaderCode = fragmentCode.c_str();
 
-	// Creating the shader program / compiling shaders
 
-	GLuint vertex, fragment;
+	GLuint vertex, fragment, geometry;
 	int success;
 	char infoLog[512];
+
+	if(m_isGeometryAttached)
+	{
+		std::string geometryCode;
+		std::ifstream gShaderFile;
+
+		gShaderFile.open(m_geometryPath);
+		if (!gShaderFile)
+		{
+			std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+			return;
+		}
+
+		std::stringstream gShaderStream;
+
+		gShaderStream << gShaderFile.rdbuf();
+
+		gShaderFile.close();
+
+		geometryCode = gShaderStream.str();
+
+		const char* gShaderCode = gShaderCode = geometryCode.c_str();
+
+		geometry = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geometry, 1, &gShaderCode, NULL);
+		glCompileShader(geometry);
+
+		glGetShaderiv(geometry, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			glGetShaderInfoLog(geometry, 512, NULL, infoLog);
+			std::cout << "ERROR::SHADER::GEOMTERY::COMPILATION_FAILED\n" << infoLog << std::endl;
+		};
+
+	}
+
+	// Creating the shader program / compiling shaders
 
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vShaderCode, NULL);
@@ -63,6 +127,8 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 	m_programID = glCreateProgram();
 	glAttachShader(m_programID, vertex);
 	glAttachShader(m_programID, fragment);
+	if(m_isGeometryAttached)
+		glAttachShader(m_programID, geometry);
 	glLinkProgram(m_programID);
 
 	glGetProgramiv(m_programID, GL_LINK_STATUS, &success);
@@ -74,29 +140,8 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
-
-	initUniformVariable("worldMat");
-	initUniformVariable("viewMat");
-	initUniformVariable("projMat");
-	initUniformVariable("worldIT");
-	initUniformVariable("cameraPos");
-
-	initUniformVariable("material.ambient");
-	initUniformVariable("material.diffuse");
-	initUniformVariable("material.specular");
-	initUniformVariable("material.shininess");
-
-	initUniformVariable("light.ambient");
-	initUniformVariable("light.diffuse");
-	initUniformVariable("light.specular");
-	initUniformVariable("light.position");
-
-	initUniformVariable("pointLightNum");
-	initUniformVariable("dirLightNum");
-
-}
-Shader::~Shader() 
-{
+	if (m_isGeometryAttached)
+		glDeleteShader(geometry);
 }
 void Shader::useProgram() 
 {
@@ -157,6 +202,11 @@ void Shader::setWVP(glm::mat4 worldMat, glm::mat4 viewMat, glm::mat4 projMat)
 	glUniformMatrix4fv(m_uniforms["projMat"], 1, GL_FALSE, glm::value_ptr(projMat));
 	glUniformMatrix4fv(m_uniforms["worldIT"], 1, GL_FALSE, glm::value_ptr(glm::inverse(glm::transpose(worldMat))));
 }
+void Shader::setWorldMat(glm::mat4 worldMat)
+{
+	glUniformMatrix4fv(m_uniforms["worldMat"], 1, GL_FALSE, glm::value_ptr(worldMat));
+	glUniformMatrix4fv(m_uniforms["worldIT"], 1, GL_FALSE, glm::value_ptr(glm::inverse(glm::transpose(worldMat))));
+}
 
 
 
@@ -184,3 +234,12 @@ void Shader::BindUniformBlock(unsigned int blockIndex, std::string name)
 	unsigned int uniformBlockIndex = glGetUniformBlockIndex(m_programID, name.c_str());
 	glUniformBlockBinding(m_programID, uniformBlockIndex, blockIndex);
 }
+
+void Shader::AttachGeometry(std::string geometryPath)
+{
+	m_geometryPath = geometryPath;
+	m_isGeometryAttached = true;
+	CompileShader();
+
+}
+

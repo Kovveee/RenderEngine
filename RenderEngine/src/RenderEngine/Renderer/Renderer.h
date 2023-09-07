@@ -33,9 +33,11 @@
 #include "Skybox.h"
 #include "UniformBuffer.h"
 
+#define DIRECTIONAL_LIGHT_UBO_SIZE 4*10*sizeof(glm::vec4)
+#define POINT_LIGHT_UBO_SIZE 10*(4 * sizeof(glm::vec4) + 3 * sizeof(float))
+
 namespace RenderEngine 
 {
-
 	class Renderer
 	{
 	public:
@@ -43,11 +45,10 @@ namespace RenderEngine
 		~Renderer();
 		void Init();
 		void Render();
-		void KeyboardInputHandler();
-		void MouseInputHandler();
 	private:
 		std::vector<Model*>& m_models;
-		std::vector<LightSource*> m_lights;
+		std::vector<DirectionalLight*> m_dirLights;
+		std::vector<PointLight*> m_pointLights;
 
 		int m_dirLightNum = 0;
 		int m_pointLightNum = 0;
@@ -63,8 +64,7 @@ namespace RenderEngine
 		Skybox* m_skybox;
 
 		UniformBuffer m_matraciesUBO;
-
-		glm::vec3 m_direction = glm::vec3(1,1,1);
+		UniformBuffer m_lightsUBO;
 
 		int m_screenWidth;
 		int m_screenHeight;
@@ -74,6 +74,19 @@ namespace RenderEngine
 
 		glm::mat4 m_projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
 
+		const std::string shaderFilePath = "..\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\";
+		const std::string textureFolderPath = "src\\Textures\\";
+
+		float m_deltaTime = 0;
+		float m_lastFrame = 0;
+
+		
+		std::vector<Vertex> m_waterGrid;
+		std::vector<unsigned int> m_waterIndices;
+		VertexArray m_waterVAO;
+		VertexBuffer m_waterVBO;
+		ElementBuffer m_waterIBO;
+
 		// GUI variables
 		glm::vec3 m_cubeColor = glm::vec3(1.f);
 		float m_cubeRotationAngle = 0;
@@ -82,28 +95,13 @@ namespace RenderEngine
 		bool m_rotateYEnable = false;
 		bool m_rotateZEnable = false;
 
-		const std::string shaderFilePath = "..\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\";
-		const std::string textureFolderPath = "src\\Textures\\";
+		// Private Methods
+		void SetLightUBO();
+		void SetViewProjUBO();
+		void InitWater();
+		void DrawWater();
+		//void MagicCube(Model* cube, Model* plane);		
 
-	
-		float m_deltaTime = 0;
-		float m_lastFrame = 0;
-		float m_lastFpsFrame = 0;
-		void MagicCube(Model* cube, Model* plane);		
-
-		float fps = 0;
-
-		void GetFps()
-		{	
-			int numberOfFrames = 0;
-			fps++;
-			if(glfwGetTime() - m_lastFpsFrame >= 1.0)
-			{
-				std::cout << "FPS: " << fps << std::endl;
-				fps = 0;
-				m_lastFpsFrame += 1.0;
-			}
-		}
 	};
 }
 

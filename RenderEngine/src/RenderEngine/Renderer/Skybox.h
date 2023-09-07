@@ -20,8 +20,8 @@ class Skybox
 public:
 	Skybox(std::vector<std::string> &texturePaths);
 	~Skybox();
-	void Draw(glm::mat4 viewMat, glm::mat4 projMat);
-	void SetTexture(std::vector<std::string> &texturePaths);
+	void Draw();
+	void SetTexture(std::vector<std::string>& texturePaths);
 
 private:
 	static Skybox* s_Skybox;

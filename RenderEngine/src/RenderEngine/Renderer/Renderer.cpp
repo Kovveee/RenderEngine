@@ -18,7 +18,7 @@ namespace RenderEngine
 		{
 			delete model;
 		}
-		for(LightSource* light: m_lights)
+		for(DirectionalLight* light: m_dirLights)
 		{
 			delete light;
 		}
@@ -29,19 +29,19 @@ namespace RenderEngine
 	{
 		m_shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
 		m_shaderProgram->BindUniformBlock(0, "Matrices");
-		m_outlineShader = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "outline.frag");
+		m_shaderProgram->BindUniformBlock(1, "Lights");
+		m_outlineShader = new Shader(shaderFilePath + "outline.vert", shaderFilePath + "outline.frag");
 		m_outlineShader->BindUniformBlock(0, "Matrices");
+		m_outlineShader->BindUniformBlock(1, "Lights");
+		m_outlineShader->AttachGeometry(shaderFilePath + "gShader.geom");
 		m_planeShader = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "planeColor.frag");
 
 		m_matraciesUBO.SetBufferData(2 * sizeof(glm::mat4), 0);
-
-
-		m_outlineShader->useProgram();
-		m_outlineShader->initUniformVariable("color");
-		m_outlineShader->unuseProgram();
+		m_lightsUBO.SetBufferData(DIRECTIONAL_LIGHT_UBO_SIZE + POINT_LIGHT_UBO_SIZE,1);
 		
-		m_lights.push_back(new PointLight(m_pointLightNum++, glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 0.f, 5.f)));
-		m_lights.push_back(new DirectionalLight(m_dirLightNum++, glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, -5.f, 0.f)));
+		m_dirLights.push_back(new DirectionalLight(DirectionalLight::Count++, glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, -0.5f, 0.f)));
+		m_pointLights.push_back(new PointLight(PointLight::Count++, glm::vec3(0.2f, 0.f, 0.f), glm::vec3(0.4f, 0.f, 0.f), glm::vec3(1.0f, 0.f, 0.f), glm::vec3(0.f, 0.f,5.f)));
+
 
 		m_shaderProgram->useProgram();
 		m_shaderProgram->setMaterial(glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(1.0f, 0.5f, 1.f), glm::vec3(0.5f, 0.5f, 0.5f), 32.f);
@@ -51,8 +51,6 @@ namespace RenderEngine
 
 		camera = new EditorCamera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
 		gameCamera = new GameCamera();
-
-		m_lastFpsFrame = glfwGetTime();
 
 		std::vector<std::string> skyboxTextures =
 		{
@@ -64,6 +62,8 @@ namespace RenderEngine
 			textureFolderPath + "skybox\\back.jpg"
 		};
 		m_skybox = new Skybox(skyboxTextures);
+
+		InitWater();
 	}
 	void Renderer::Render()
 	{
@@ -76,60 +76,120 @@ namespace RenderEngine
 		glfwGetFramebufferSize(m_window, &m_screenWidth, &m_screenHeight);
 		glViewport(0, 0, m_screenWidth, m_screenHeight);
 
-		//GetFps();
-
-		m_skybox->Draw(gameCamera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f));
 
 		float currentFrame = glfwGetTime();
 		m_deltaTime = currentFrame - m_lastFrame;
 		m_lastFrame = currentFrame;
 
-		//camera->Update(m_window, m_deltaTime);
-		gameCamera->Update(m_deltaTime, m_models[0]);
-
-		m_matraciesUBO.Bind();
-		glm::mat4 tmpProj = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 440.f);
-		m_matraciesUBO.SetUniform(0, sizeof(glm::mat4), glm::value_ptr(tmpProj));
-		glm::mat4 tmpCameraView = gameCamera->GetLookAt();
-		m_matraciesUBO.SetUniform(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(tmpCameraView));
-		m_matraciesUBO.UnBind();
+		camera->Update(m_window, m_deltaTime);
+		//gameCamera->Update(m_deltaTime, m_models[0]);
+		
+		SetViewProjUBO();
+		SetLightUBO();
 
 		m_shaderProgram->useProgram();
-		m_shaderProgram->setUniform("pointLightNum", m_pointLightNum);
-		m_shaderProgram->setUniform("dirLightNum", m_dirLightNum);
+		m_shaderProgram->setUniform("pointLightNum", PointLight::Count);
+		m_shaderProgram->setUniform("dirLightNum", DirectionalLight::Count);
 		m_shaderProgram->unuseProgram();
 
-		for (int i = 0; i < m_lights.size(); ++i)
-		{
-			m_lights[i]->SetInShader(m_shaderProgram);
-		}
-		for (Model* model : m_models) {
-			model->Draw(m_shaderProgram, gameCamera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 440.f), gameCamera->GetPos());
-		}
+		m_skybox->Draw();
 
-		KeyboardInputHandler();
-		MouseInputHandler();
+		for (Model* model : m_models) {
+			model->Draw(m_shaderProgram, gameCamera->GetPos());
+		}
+		DrawWater();
 
 		m_editorGUI->enableGui();
 		m_editorGUI->MainWindow(m_models);
 		m_editorGUI->drawGui();
 	}
-	void Renderer::KeyboardInputHandler()
+	void Renderer::InitWater()
 	{
+		for(int i = 0; i <= 10; ++i)
+		{
+			for(int j = 0; j <= 10; ++j)
+			{
 
+				m_waterGrid.push_back({glm::vec3(i-5,0,j-5), glm::vec3(0,1,0), glm::vec2(0,0)});
+			}
+		}
+		for (int j = 0; j < 10; ++j)
+		{
+			for(int i = 0; i < 10; ++i)
+			{
+				int index = i * 6 + j * (6 * 10);
+				m_waterIndices.push_back(i + j * (10 + 1));
+				m_waterIndices.push_back((i+1) + j * (10 + 1));
+				m_waterIndices.push_back(i + (j+1) * (10 + 1));
+				m_waterIndices.push_back((i+1) + j * (10 + 1));
+				m_waterIndices.push_back((i+1) + (j+1) * (10 + 1));
+				m_waterIndices.push_back(i + (j+1) * (10 + 1));
+			}
+		}
+		m_waterVAO.bind();
+		m_waterVBO.bind();
+		m_waterIBO.Bind();
+		m_waterVBO.setBufferData(11 * 11, &m_waterGrid[0]);
+		m_waterIBO.SetBufferData(m_waterIndices.size(), &m_waterIndices[0]);
+		m_waterVAO.initVertexArray();
+		m_waterVAO.unbind();
+		m_waterVBO.unbind();
+		m_waterIBO.Unbind();
 	}
-	void Renderer::MouseInputHandler()
+	void Renderer::DrawWater()
 	{
-
+		m_outlineShader->useProgram();
+		m_outlineShader->setWorldMat(glm::scale(glm::vec3(10,1,10)));
+		m_outlineShader->initUniformVariable("time");
+		m_outlineShader->setUniform("time", (float)glfwGetTime());
+		m_waterVAO.bind();
+		glDrawElements(GL_TRIANGLES, 3 * 2 * 10 * 10, GL_UNSIGNED_INT, 0);
+		m_waterVAO.unbind();
+		m_outlineShader->unuseProgram();
 	}
-	void Renderer::MagicCube(Model* cube, Model* plane)
+	void Renderer::SetLightUBO()
+	{
+		for (int i = 0; i < m_dirLights.size(); ++i)
+		{
+			m_lightsUBO.Bind();
+			DirectionalLightData* data = (DirectionalLightData*)m_dirLights[i]->GetData();
+			m_lightsUBO.SetUniform(i * DirectionalLight::Size, sizeof(glm::vec4), glm::value_ptr(data->direction));
+			m_lightsUBO.SetUniform(i * DirectionalLight::Size + sizeof(glm::vec4), sizeof(glm::vec4), glm::value_ptr(data->ambient));
+			m_lightsUBO.SetUniform(i * DirectionalLight::Size + sizeof(glm::vec4) * 2, sizeof(glm::vec4), glm::value_ptr(data->diffuse));
+			m_lightsUBO.SetUniform(i * DirectionalLight::Size + sizeof(glm::vec4) * 3, sizeof(glm::vec4), glm::value_ptr(data->specular));
+			m_lightsUBO.UnBind();
+		}
+		for(int i = 0; i < m_pointLights.size(); ++i)
+		{
+			m_lightsUBO.Bind();
+			PointLightData* data = (PointLightData*)m_pointLights[i]->GetData();
+			m_lightsUBO.SetUniform(DIRECTIONAL_LIGHT_UBO_SIZE + i * PointLight::Size, sizeof(glm::vec4), glm::value_ptr(data->position));
+			m_lightsUBO.SetUniform(DIRECTIONAL_LIGHT_UBO_SIZE + i * PointLight::Size + sizeof(glm::vec4), sizeof(glm::vec4), glm::value_ptr(data->ambient));
+			m_lightsUBO.SetUniform(DIRECTIONAL_LIGHT_UBO_SIZE + i * PointLight::Size + sizeof(glm::vec4) * 2, sizeof(glm::vec4), glm::value_ptr(data->diffuse));
+			m_lightsUBO.SetUniform(DIRECTIONAL_LIGHT_UBO_SIZE + i * PointLight::Size + sizeof(glm::vec4) * 3, sizeof(glm::vec4), glm::value_ptr(data->specular));
+			m_lightsUBO.SetUniform(DIRECTIONAL_LIGHT_UBO_SIZE + i * PointLight::Size + sizeof(glm::vec4) * 4, sizeof(float), &data->constant);
+			m_lightsUBO.SetUniform(DIRECTIONAL_LIGHT_UBO_SIZE + i * PointLight::Size + sizeof(glm::vec4) * 4 + sizeof(float), sizeof(float), &data->linear);
+			m_lightsUBO.SetUniform(DIRECTIONAL_LIGHT_UBO_SIZE + i * PointLight::Size + sizeof(glm::vec4) * 3 + sizeof(float) * 2, sizeof(float), &data->quadratic);
+			m_lightsUBO.UnBind();
+		}
+	}
+	void Renderer::SetViewProjUBO()
+	{
+		m_matraciesUBO.Bind();
+		glm::mat4 tmpProj = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 440.f);
+		m_matraciesUBO.SetUniform(0, sizeof(glm::mat4), glm::value_ptr(tmpProj));
+		glm::mat4 tmpCameraView = camera->GetLookAt();
+		m_matraciesUBO.SetUniform(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(tmpCameraView));
+		m_matraciesUBO.UnBind();
+	}
+	/*void Renderer::MagicCube(Model* cube, Model* plane)
 	{
 		m_planeShader->useProgram();
 		m_planeShader->setUniform("color", glm::vec3(1, 1, 1));
 		m_planeShader->unuseProgram();
 
 		glDisable(GL_DEPTH_TEST);
-		cube->Draw(m_planeShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+		cube->Draw(m_planeShader, camera->GetPos());
 		glEnable(GL_DEPTH_TEST);
 
 		glEnable(GL_STENCIL_TEST);
@@ -156,7 +216,7 @@ namespace RenderEngine
 			angle += 90;
 			if (angle == 360)
 				angle = 0;
-			plane->Draw(m_planeShader, camera->GetLookAt(), glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f), camera->GetPos());
+			plane->Draw(m_planeShader,  camera->GetPos());
 			glColorMask(1, 1, 1, 1);
 			glEnable(GL_DEPTH_TEST);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
@@ -171,5 +231,5 @@ namespace RenderEngine
 			glClear(GL_STENCIL_BUFFER_BIT);
 		}
 		glDisable(GL_STENCIL_TEST);
-	}
+	}*/
 }

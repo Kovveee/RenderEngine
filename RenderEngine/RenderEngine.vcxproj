@@ -161,7 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\RenderEngine\Renderer\Shaders\fShader.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\gShader.geom" />
     <None Include="src\RenderEngine\Renderer\Shaders\outline.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\outline.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\planeColor.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\skybox.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\skybox.vert" />

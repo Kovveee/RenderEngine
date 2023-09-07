@@ -13,8 +13,10 @@ class LightSource
 {
 public:
 	virtual void SetInShader(Shader* shader) = 0;
+	virtual void* GetData() = 0;
 protected:
 	LightSource(unsigned int lightId, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular): m_lightId(lightId), m_ambient(ambient), m_diffuse(diffuse), m_specular(specular){}
+
 
 	glm::vec3 m_ambient;
 	glm::vec3 m_diffuse;

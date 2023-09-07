@@ -120,7 +120,7 @@ bool Model::isTextureLoaded(aiString name, Mesh* mesh)
  	return meshToAdd;
 }
 
-void Model::Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 cameraPos)
+void Model::Draw(Shader* shader, glm::vec3 cameraPos)
 {
 	shader->useProgram();
 	shader->setCameraPos(cameraPos);
@@ -128,8 +128,7 @@ void Model::Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 camer
 	
 	m_world = glm::translate(m_translation) * (glm::rotate(glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f)) * glm::rotate(glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f)) * glm::rotate(glm::radians(m_rotation.x), glm::vec3(1.f, 0.f, 0.f))) * glm::scale(m_scale) * glm::mat4(1);
 	m_transform = glm::vec3(transformTemp.x, transformTemp.y, transformTemp.z);
-	shader->setWVP(m_world, view, proj);
-
+	shader->setWorldMat(m_world);
 
 	for(unsigned int i = 0; i < meshes.size(); ++i)
 	{

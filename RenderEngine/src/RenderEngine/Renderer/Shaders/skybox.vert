@@ -6,8 +6,14 @@ out vec3 TexCoords;
 uniform mat4 projMat;
 uniform mat4 viewMat;
 
+layout (std140) uniform Matrices
+{
+	mat4 projection;
+	mat4 view;
+};
+
 void main()
 {
     TexCoords = Position;
-    gl_Position = projMat * viewMat * vec4(Position, 1.0);
+    gl_Position = projection * mat4(mat3(view)) * vec4(Position, 1.0);
 }  

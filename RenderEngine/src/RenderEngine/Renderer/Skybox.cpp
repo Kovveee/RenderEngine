@@ -16,15 +16,16 @@ Skybox::Skybox(std::vector<std::string> &texturePaths)
 	m_vao.initVertexArray();
 
 	m_skyboxShader = new Shader(shaderFilePath + "skybox.vert", shaderFilePath + "skybox.frag");
+	m_skyboxShader->BindUniformBlock(0, "Matrices");
 }
 Skybox::~Skybox()
 {
 	delete m_skyboxShader;
 }
-void Skybox::Draw(glm::mat4 viewMat, glm::mat4 projMat)
+void Skybox::Draw()
 {
 	m_skyboxShader->useProgram();
-	m_skyboxShader->setWVP(glm::mat4(1), glm::mat4(glm::mat3(viewMat)), projMat);
+	m_skyboxShader->setWorldMat(glm::mat4(1));
 	glDepthMask(GL_FALSE);
 	m_vao.bind();
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_textureID);

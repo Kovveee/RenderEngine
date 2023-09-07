@@ -50,14 +50,12 @@ class Model
 public:
 	Model(const std::string modelName, const std::string filePath);
 	~Model();
-	void Draw(Shader* shader, glm::mat4 view, glm::mat4 proj, glm::vec3 cameraPos);
+	void Draw(Shader* shader, glm::vec3 cameraPos);
 	std::string GetName() const { return m_name; };
 	glm::vec3* GetTranslation() { return &m_translation; }
 	glm::vec3* GetRotation() { return &m_rotation; }
 	glm::vec3* GetScale() { return &m_scale; }
 	glm::mat4 GetWorld() { return m_world; }
-	virtual void HandleMouseInput() {};
-	virtual void HandleKeyInput() {};
 	Collider collider;
 
 private:
