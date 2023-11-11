@@ -41,6 +41,8 @@ namespace RenderEngine {
 
 		float mechRotation = 0;
 		glm::vec2 mechFront = glm::vec2(0, 1);
+		void HandleInputPoll();
+		void HandleInputEvent();
 };
 
 	Application* CreateApplication();

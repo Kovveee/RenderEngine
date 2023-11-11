@@ -27,6 +27,9 @@ namespace RenderEngine
 	}
 	void Renderer::Init()
 	{
+		glfwWindowHint(GLFW_SAMPLES, 16);
+		glEnable(GL_MULTISAMPLE);
+
 		m_shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
 		m_shaderProgram->BindUniformBlock(0, "Matrices");
 		m_shaderProgram->BindUniformBlock(1, "Lights");
@@ -72,7 +75,6 @@ namespace RenderEngine
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
-
 		glfwGetFramebufferSize(m_window, &m_screenWidth, &m_screenHeight);
 		glViewport(0, 0, m_screenWidth, m_screenHeight);
 
@@ -95,7 +97,7 @@ namespace RenderEngine
 		m_skybox->Draw();
 
 		for (Model* model : m_models) {
-			model->Draw(m_shaderProgram, gameCamera->GetPos());
+			model->Draw(m_planeShader, gameCamera->GetPos());
 		}
 		DrawWater();
 
