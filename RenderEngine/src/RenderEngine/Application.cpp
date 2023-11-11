@@ -22,9 +22,6 @@ namespace RenderEngine {
 		s_Instance = this;
 
 		m_models.push_back(new Model("mech", "src\\Models\\mech\\mech.obj"));
-		m_models.push_back(new Model("cube1", "src\\Models\\cube\\untitled2.obj"));
-		m_models.push_back(new Model("cube2", "src\\Models\\cube\\untitled2.obj"));
-		m_models.push_back(new Model("ground", "src\\Models\\plane\\plane.obj"));
 
 		m_window->SetEventCallback(BIND_EVENT(OnEvent));
 	}
@@ -41,35 +38,6 @@ namespace RenderEngine {
 		{
 			m_window->Update();
 			m_renderer->Render();
-
-			if (WindowInput::IsKeyPressed(KeyCodes::KEY_W))
-			{
-				*m_models[0]->GetTranslation() = *m_models[0]->GetTranslation() + glm::vec3(0, 0, 1);
-			}
-			if (WindowInput::IsKeyPressed(KeyCodes::KEY_S))
-			{
-				*m_models[0]->GetTranslation() = *m_models[0]->GetTranslation() + glm::vec3(0, 0, -1);
-			}
-			if (WindowInput::IsKeyPressed(KeyCodes::KEY_A))
-			{
-				*m_models[0]->GetTranslation() = *m_models[0]->GetTranslation() + glm::vec3(1, 0, 0);
-			}
-			if (WindowInput::IsKeyPressed(KeyCodes::KEY_D))
-			{
-				*m_models[0]->GetTranslation() = *m_models[0]->GetTranslation() + glm::vec3(-1, 0, 0);
-			}
-			
-
-			glm::vec2 mousePos =glm::vec2(WindowInput::GetMouseX() - m_window->GetWidth() / 2, (WindowInput::GetMouseY() - m_window->GetHeight() / 2));
-			mousePos.y = -mousePos.y;
-			float rotationDot = glm::dot(mousePos, mechFront) / (glm::length(mousePos) * glm::length(mechFront));
-			float acossValue = rotationDot;
-			float rotationAngle = glm::acos(acossValue);
-			if (mousePos.x > 0)
-				rotationAngle = -rotationAngle;
-			
-			*m_models[0]->GetRotation() = glm::vec3(0, glm::degrees(rotationAngle), 0);
-
 		}
 	}
 	void Application::OnEvent(Event& e)
