@@ -35,6 +35,8 @@ public:
 	void setUniform<unsigned int>(const char* name, unsigned int value);
 	template<>
 	void setUniform<float>(const char* name, float value);
+	template<>
+	void setUniform<bool>(const char* name, bool value);
 
 	void setWVP(glm::mat4 worldMat, glm::mat4 viewMat, glm::mat4 projMat);
 	void setMaterial(glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, float shininess);

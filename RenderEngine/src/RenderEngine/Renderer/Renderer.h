@@ -32,9 +32,13 @@
 #include "GameCamera.h"
 #include "Skybox.h"
 #include "UniformBuffer.h"
+#include "ShadowBox.h"
 
 #define DIRECTIONAL_LIGHT_UBO_SIZE 4*10*sizeof(glm::vec4)
 #define POINT_LIGHT_UBO_SIZE 10*(4 * sizeof(glm::vec4) + 3 * sizeof(float))
+
+#define FAR_PLANE 1000.f
+#define NEAR_PLANE 0.01f
 
 namespace RenderEngine 
 {
@@ -50,6 +54,21 @@ namespace RenderEngine
 		std::vector<DirectionalLight*> m_dirLights;
 		std::vector<PointLight*> m_pointLights;
 
+		// ShadowMapping
+		unsigned int depthMapFBO = 0;
+		unsigned int depthMap = 0;
+
+
+		// Testing depth map
+		float near_plane = 0.1f;
+		float far_plane = 400.f;
+		float size = 30.f;
+
+		bool isNormalSet = false;
+
+
+		glm::mat4 lightSpaceMatrix;
+
 		int m_dirLightNum = 0;
 		int m_pointLightNum = 0;
 
@@ -60,6 +79,8 @@ namespace RenderEngine
 		Shader* m_shaderProgram;
 		Shader* m_outlineShader;
 		Shader* m_planeShader;
+		Shader* m_shadowMapShader;
+		Shader* m_shadowDebugShader;
 
 		Skybox* m_skybox;
 
@@ -69,23 +90,15 @@ namespace RenderEngine
 		int m_screenWidth;
 		int m_screenHeight;
 
-		Camera* camera;
-		GameCamera* gameCamera;		
+		EditorCamera* camera;
 
 		glm::mat4 m_projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
 
-		const std::string shaderFilePath = "..\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\";
-		const std::string textureFolderPath = "src\\Textures\\";
+		const std::string shaderFilePath = "..\\..\\..\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\";
+		const std::string textureFolderPath = "..\\..\\..\\Sandbox\\src\\Textures\\";
 
 		float m_deltaTime = 0;
 		float m_lastFrame = 0;
-
-		
-		std::vector<Vertex> m_waterGrid;
-		std::vector<unsigned int> m_waterIndices;
-		VertexArray m_waterVAO;
-		VertexBuffer m_waterVBO;
-		ElementBuffer m_waterIBO;
 
 		// GUI variables
 		glm::vec3 m_cubeColor = glm::vec3(1.f);
@@ -98,10 +111,10 @@ namespace RenderEngine
 		// Private Methods
 		void SetLightUBO();
 		void SetViewProjUBO();
-		void InitWater();
-		void DrawWater();
-		//void MagicCube(Model* cube, Model* plane);		
 
+		void InitShadowMap();
+		void GenerateShadowMap();
+		void RenderShadowMap();
 	};
 }
 

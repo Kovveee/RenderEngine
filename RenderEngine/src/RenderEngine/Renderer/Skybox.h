@@ -34,7 +34,7 @@ private:
 
 	Shader* m_skyboxShader;
 	
-	const std::string shaderFilePath = "..\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\";
+	const std::string shaderFilePath = "..\\..\\..\\RenderEngine\\src\\RenderEngine\\Renderer\\Shaders\\";
 
 	void LoadTexture();
 

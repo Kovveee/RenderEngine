@@ -91,6 +91,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderEngine\Renderer\ShadowBox.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Skybox.h" />
     <ClInclude Include="src\RenderEngine\Renderer\GameCamera.h" />
     <ClInclude Include="src\RenderEngine\Event\Event.h" />
@@ -132,6 +133,7 @@
     <ClInclude Include="src\RenderEngine\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RenderEngine\Renderer\ShadowBox.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Skybox.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\GameCamera.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\EditorGUI.cpp" />
@@ -165,6 +167,10 @@
     <None Include="src\RenderEngine\Renderer\Shaders\outline.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\outline.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\planeColor.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\shadowMap.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\shadowMap.vert" />
+    <None Include="src\RenderEngine\Renderer\Shaders\shadowMapDebug.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\shadowMapDebug.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\skybox.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\skybox.vert" />
     <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />

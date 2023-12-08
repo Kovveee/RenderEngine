@@ -14,6 +14,8 @@
 
 //RenderEngine
 #include "Model.h"
+#include "LightSource.h"
+#include "DirectionalLight.h"
 
 
 class EditorGUI
@@ -23,7 +25,8 @@ public:
 	void enableGui();
 	void destroyGui();
 	void drawGui();
-	void MainWindow(std::vector<Model*>& models);
+	void MainWindow(std::vector<Model*>& models, std::vector<DirectionalLight*>& lightSources);
+	void TestDepthMap(float& near_plane, float& far_plane, float& size, bool& isNormal);
 private:
 	void PropertyWindow(Model* model);
 

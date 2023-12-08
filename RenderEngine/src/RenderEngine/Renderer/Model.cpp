@@ -7,7 +7,7 @@ Model::Model(const std::string modelName , const std::string filePath):
 	Assimp::Importer importer;
 
 	m_directory = filePath.substr(0, filePath.find_last_of('\\'));
-	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_Triangulate| aiProcess_GenSmoothNormals);
+	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_Triangulate| aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
 
 	if(scene == nullptr)
 	{
@@ -16,7 +16,6 @@ Model::Model(const std::string modelName , const std::string filePath):
 	}
 
 	ProcessNode(scene->mRootNode,scene);	
-	collider.BuildCollider(positions);
 }
 Model::~Model()
 {
@@ -61,6 +60,15 @@ std::vector<Texture*> Model::ProcessMaterial(aiMaterial* material, const aiScene
 			texturesToAdd.push_back(textureToAdd);
 		}
 	}
+	for (int i = 0; i < material->GetTextureCount(aiTextureType_HEIGHT); ++i) {
+		material->GetTexture(aiTextureType_HEIGHT, i, & textureName);
+		if (isTextureLoaded(textureName, mesh) == false)
+		{
+			std::string textureNameTemp = std::string(textureName.C_Str());
+			Texture* textureToAdd = new Texture(m_directory + "\\" + textureNameTemp.substr(textureNameTemp.find_last_of('/') + 1, textureNameTemp.length()), "normal");
+			texturesToAdd.push_back(textureToAdd);
+		}
+	}
 	return texturesToAdd;
 }
 bool Model::isTextureLoaded(aiString name, Mesh* mesh) 
@@ -102,8 +110,15 @@ bool Model::isTextureLoaded(aiString name, Mesh* mesh)
 			texture.y = mesh->mTextureCoords[0][i].y;
 			vertex.texture = texture;
 		}
+		vector.x = mesh->mTangents[i].x;
+		vector.y = mesh->mTangents[i].y;
+		vector.z = mesh->mTangents[i].z;
+
+		vertex.tagent = vector;
+
 		positions.push_back(vertex.position);
 		meshToAdd->vertices.push_back(vertex);
+
 	}
 	for(unsigned int i = 0; i < mesh->mNumFaces; ++i)
 	{
@@ -134,17 +149,26 @@ void Model::Draw(Shader* shader, glm::vec3 cameraPos)
 	{
 		for (unsigned int j = 0; j < meshes[i]->textures.size(); ++j)
 		{
+			//shader->setUniform("normalIsSet", false);
+
+
 			if (meshes[i]->textures[j]->getType() == "diffuse")
 			{
 				shader->initUniformVariable("material.diffuse");
 				shader->setUniform("material.diffuse", 0);
-				meshes[i]->textures[j]->bind(j);
+				meshes[i]->textures[j]->bind(0);
 			}
-			else
+			else if(meshes[i]->textures[j]->getType() == "specular")
 			{
 				shader->initUniformVariable("material.specular");
 				shader->setUniform("material.specular", 1);
-				meshes[i]->textures[j]->bind(j);
+				meshes[i]->textures[j]->bind(1);
+			}
+			else if(meshes[i]->textures[j]->getType() == "normal") {
+				//shader->setUniform("normalIsSet", true);
+				shader->initUniformVariable("material.normalMap");
+				shader->setUniform("material.normalMap", 2);
+				meshes[i]->textures[j]->bind(2);
 			}
 		}
 		meshes[i]->vao.bind();
@@ -155,16 +179,6 @@ void Model::Draw(Shader* shader, glm::vec3 cameraPos)
 		}
 		glBindVertexArray(0);
 	}
-	positions.clear();
-	for (Mesh* mesh : meshes)
-	{
-		for (int i = 0; i < mesh->vertices.size(); ++i)
-		{
-			glm::vec4 vertex = m_world * glm::vec4(mesh->vertices[i].position.x, mesh->vertices[i].position.y, mesh->vertices[i].position.z, 1);
-			positions.push_back(glm::vec3(vertex.x, vertex.y, vertex.z));
-		}
-	}
-	collider.BuildCollider(positions);
 	shader->unuseProgram();
 }	
 

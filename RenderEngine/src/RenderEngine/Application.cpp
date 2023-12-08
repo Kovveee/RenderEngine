@@ -21,7 +21,7 @@ namespace RenderEngine {
 
 		s_Instance = this;
 
-		m_models.push_back(new Model("mech", "src\\Models\\mech\\mech.obj"));
+		m_models.push_back(new Model("mech", "..\\..\\..\\Sandbox\\src\\Models\\normalTest\\cube.obj"));
 
 		m_window->SetEventCallback(BIND_EVENT(OnEvent));
 	}

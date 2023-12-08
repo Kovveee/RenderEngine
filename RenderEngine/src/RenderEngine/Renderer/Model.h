@@ -56,8 +56,6 @@ public:
 	glm::vec3* GetRotation() { return &m_rotation; }
 	glm::vec3* GetScale() { return &m_scale; }
 	glm::mat4 GetWorld() { return m_world; }
-	Collider collider;
-
 private:
 	std::vector<Mesh*> meshes;
 	std::vector<glm::vec3> positions;

@@ -132,6 +132,9 @@
     <ClInclude Include="src\RenderEngine\Renderer\UniformBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RenderEngine\Renderer\ShadowBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Application.cpp">
@@ -212,6 +215,9 @@
     <ClCompile Include="src\RenderEngine\Renderer\UniformBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderEngine\Renderer\ShadowBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\RenderEngine\Renderer\Shaders\vShader.vert" />
@@ -222,5 +228,9 @@
     <None Include="src\RenderEngine\Renderer\Shaders\skybox.frag" />
     <None Include="src\RenderEngine\Renderer\Shaders\gShader.geom" />
     <None Include="src\RenderEngine\Renderer\Shaders\outline.vert" />
+    <None Include="src\RenderEngine\Renderer\Shaders\shadowMap.vert" />
+    <None Include="src\RenderEngine\Renderer\Shaders\shadowMap.frag" />
+    <None Include="src\RenderEngine\Renderer\Shaders\shadowMapDebug.vert" />
+    <None Include="src\RenderEngine\Renderer\Shaders\shadowMapDebug.frag" />
   </ItemGroup>
 </Project>

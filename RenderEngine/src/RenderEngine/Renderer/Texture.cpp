@@ -14,13 +14,24 @@ Texture::Texture(std::string imagePath, std::string type) :
 	data = stbi_load(imagePath.c_str(), &m_width, &m_height, &m_nrChannels, 0);
 	if (data)
 	{
-		GLenum format = GL_RGB;
-		if (m_nrChannels == 1)
-			format = GL_RED;
-		else if (m_nrChannels == 4)
-			format = GL_RGBA;
-		glTexImage2D(GL_TEXTURE_2D, 0, format, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		if (type == "diffuse") {
+			GLenum format = GL_RGB;
+			if (m_nrChannels == 1)
+				format = GL_RED;
+			else if (m_nrChannels == 4)
+				format = GL_RGBA;
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else if (type == "specular" || type == "normal") {
+			GLenum format = GL_RGB;
+			if (m_nrChannels == 1)
+				format = GL_RED;
+			else if (m_nrChannels == 4)
+				format = GL_RGBA;
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
 	}
 	else
 	{

@@ -10,6 +10,9 @@ class EditorCamera: public Camera
 public:
 	EditorCamera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp);
 	void Update(GLFWwindow* window ,float deltaTime) override;
+
+	float getYaw() { return m_yaw; }
+	float getPitch() { return m_pitch; }
 private:
 	float m_yaw;
 	float m_pitch;

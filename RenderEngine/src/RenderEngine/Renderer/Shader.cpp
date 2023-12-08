@@ -24,6 +24,8 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
 	initUniformVariable("pointLightNum");
 	initUniformVariable("dirLightNum");
 
+	initUniformVariable("shadowMap");
+
 }
 Shader::~Shader() 
 {
@@ -39,11 +41,21 @@ void Shader::CompileShader()
 
 	vShaderFile.open(m_vertexPath);
 	fShaderFile.open(m_fragmentPath);
-	if (!vShaderFile || !fShaderFile)
-	{
-		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+	if (!fShaderFile && !vShaderFile) {
+		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ::ON_PATH::" << m_vertexPath << std::endl;
+		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ::ON_PATH::" << m_fragmentPath << std::endl;
 		return;
 	}
+	else if (!vShaderFile)
+	{
+		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ::ON_PATH::"<<m_vertexPath << std::endl;
+		return;
+	}
+	else if (!fShaderFile) {
+		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ::ON_PATH::" << m_fragmentPath << std::endl;
+		return;
+	}
+	
 
 	std::stringstream vShaderStream, fShaderStream;
 
@@ -191,6 +203,11 @@ void Shader::setUniform<unsigned int>(const char* name, unsigned int value)
 }
 template<>
 void Shader::setUniform<float>(const char* name, float value)
+{
+	glUniform1f(m_uniforms[name], value);
+}
+template<>
+void Shader::setUniform<bool>(const char* name, bool value)
 {
 	glUniform1f(m_uniforms[name], value);
 }
