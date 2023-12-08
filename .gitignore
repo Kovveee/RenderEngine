@@ -399,3 +399,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/Sandbox/src/Models/bistro
+/Sandbox/src/Models/city
+/Sandbox/src/Models/scene
+/Sandbox/src/Models/normalTest
+/Sandbox/src/Models/spaceGarden
+/Sandbox/src/Models/testScene
