@@ -4,6 +4,7 @@
 #include <stb_image.h>
 #include <iostream>
 #include <string>
+#include <dds_loader.h>
 
 class Texture
 {
@@ -23,6 +24,8 @@ private:
 	int m_width;
 	int m_height;
 	int m_nrChannels;
-	unsigned char* data;
+	unsigned char* data = NULL;
+	DDS_TEXTURE* dds_data = NULL;
+	bool isDDS = false;;
 };
 

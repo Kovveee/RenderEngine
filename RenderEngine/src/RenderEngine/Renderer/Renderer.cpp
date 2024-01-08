@@ -33,11 +33,7 @@ namespace RenderEngine
 		m_shaderProgram = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "fShader.frag");
 		m_shaderProgram->BindUniformBlock(0, "Matrices");
 		m_shaderProgram->BindUniformBlock(1, "Lights");
-		m_outlineShader = new Shader(shaderFilePath + "outline.vert", shaderFilePath + "outline.frag");
-		m_outlineShader->BindUniformBlock(0, "Matrices");
-		m_outlineShader->BindUniformBlock(1, "Lights");
-		m_outlineShader->AttachGeometry(shaderFilePath + "gShader.geom");
-		m_planeShader = new Shader(shaderFilePath + "vShader.vert", shaderFilePath + "planeColor.frag");
+		
 
 		m_matraciesUBO.SetBufferData(3 * sizeof(glm::mat4), 0);
 		m_lightsUBO.SetBufferData(DIRECTIONAL_LIGHT_UBO_SIZE + POINT_LIGHT_UBO_SIZE,1);

@@ -55,9 +55,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL;GLEW_STATIC;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RE_PLATFORM_WINDOWS;RE_BUILD_DLL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLM\;$(SolutionDir)RenderEngine\vendor\imgui\;$(SolutionDir)RenderEngine\vendor\STB_IMAGE;$(SolutionDir)RenderEngine\vendor\ASSIMP\include;$(SolutionDir)RenderEngine\vendor\imgui\;$(SolutionDir)RenderEngine\vendor\STB_IMAGE;$(SolutionDir)RenderEngine\vendor\ASSIMP\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)RenderEngine\vendor\GLEW\include;$(SolutionDir)RenderEngine\vendor\GLFW\include;$(SolutionDir)RenderEngine\vendor\GLM\;$(SolutionDir)RenderEngine\vendor\imgui\;$(SolutionDir)RenderEngine\vendor\STB_IMAGE;$(SolutionDir)RenderEngine\vendor\ASSIMP\include;$(SolutionDir)RenderEngine\vendor\dds_loader\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -91,6 +91,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderEngine\Renderer\CameraControllerBase.h" />
     <ClInclude Include="src\RenderEngine\Renderer\ShadowBox.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Skybox.h" />
     <ClInclude Include="src\RenderEngine\Renderer\GameCamera.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="src\RenderEngine\Renderer\Texture.cpp" />
     <ClCompile Include="src\RenderEngine\WindowInput.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\UniformBuffer.cpp" />
+    <ClCompile Include="vendor\dds_loader\src\dds_loader.cpp" />
     <ClCompile Include="vendor\IMGUI\imgui.cpp" />
     <ClCompile Include="vendor\IMGUI\imgui_demo.cpp" />
     <ClCompile Include="vendor\IMGUI\imgui_draw.cpp" />
