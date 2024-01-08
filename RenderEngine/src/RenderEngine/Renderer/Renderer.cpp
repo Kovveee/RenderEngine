@@ -13,6 +13,7 @@ namespace RenderEngine
 	Renderer::~Renderer()
 	{
 		delete m_shaderProgram;
+		delete m_shadowMapShader;
 		delete camera;
 		for(Model* model: m_models)
 		{
@@ -47,7 +48,8 @@ namespace RenderEngine
 
 		m_editorGUI = new EditorGUI(m_window);
 
-		camera = new EditorCamera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
+		EditorCameraController *editorController = new EditorCameraController();
+		camera = new Camera(glm::vec3(0.f, 0.f, 3.0f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f),editorController);
 
 		std::vector<std::string> skyboxTextures =
 		{
@@ -60,13 +62,11 @@ namespace RenderEngine
 		};
 		m_skybox = new Skybox(skyboxTextures);
 
-		InitShadowMap();
+		GenerateShadowMap();
 
 	}
 	void Renderer::Render()
 	{
-		GenerateShadowMap();
-
 		glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
@@ -144,9 +144,6 @@ namespace RenderEngine
 		m_matraciesUBO.SetUniform(sizeof(glm::mat4)*2, sizeof(glm::mat4), glm::value_ptr(lightSpaceMatrix));
 		m_matraciesUBO.UnBind();
 	}
-	void Renderer::InitShadowMap() {
-		
-	}
 	void Renderer::GenerateShadowMap() {
 
 		if(depthMapFBO == 0)
@@ -172,6 +169,8 @@ namespace RenderEngine
 			std::cout << "ERROR::FRAMEBUFFER:: Frambuffer is not complete!" << std::endl;
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		m_shadowMapShader = new Shader(shaderFilePath + "shadowMap.vert", shaderFilePath + "shadowMap.frag");
 	}
 	void Renderer::RenderShadowMap() {
 		glViewport(0, 0, 4096, 4096);
@@ -196,14 +195,13 @@ namespace RenderEngine
 
 		lightSpaceMatrix = lightProjection * lightView;
 
-		m_shadowMapShader = new Shader(shaderFilePath + "shadowMap.vert", shaderFilePath + "shadowMap.frag");
-
+		
 		// Render Scene
 		m_shadowMapShader->useProgram();
 		m_shadowMapShader->initUniformVariable("lightSpaceMatrix");
 		m_shadowMapShader->setUniform("lightSpaceMatrix", lightSpaceMatrix);
 		m_shadowMapShader->unuseProgram();
-
+		
 		for (Model* model : m_models) {
 			model->Draw(m_shadowMapShader, camera->GetPos());
 		}
@@ -211,56 +209,5 @@ namespace RenderEngine
 
 		glViewport(0, 0, m_screenWidth, m_screenHeight);
 		glPolygonOffset(0.0, 0.0);
-
-
-		/*Vertex quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-			// positions   // texCoords
-			{glm::vec3(-1.0f,1.0f,0.0f), glm::vec3(0.f,0.f,0.f) ,glm::vec2(0.0f, 1.0f)},
-			{glm::vec3(-1.0f,-1.0f,0.0f), glm::vec3(0.f,0.f,0.f) ,glm::vec2(0.0f, 0.0f)},
-			{glm::vec3(1.0f,-1.0f,0.0f), glm::vec3(0.f,0.f,0.f) ,glm::vec2(1.0f, 0.0f)},
-
-			{glm::vec3(-1.0f,1.0f,0.0f), glm::vec3(0.f,0.f,0.f) ,glm::vec2(0.0f, 1.0f)},
-			{glm::vec3(1.0f,1.0f,0.0f), glm::vec3(0.f,0.f,0.f) ,glm::vec2(1.0f, 1.0f)},
-			{glm::vec3(1.0f,-1.0f,0.0f), glm::vec3(0.f,0.f,0.f) ,glm::vec2(1.0f, 0.0f)}
-		};
-
-		unsigned int indices[] = {
-			0,1,2,
-			3,4,5
-		};
-
-		VertexArray quadVao;
-		VertexBuffer quadVbo;
-		ElementBuffer quadIbo;
-
-		m_shadowDebugShader = new Shader(shaderFilePath + "shadowMapDebug.vert", shaderFilePath + "shadowMapDebug.frag");
-		m_shadowDebugShader->initUniformVariable("depthMap");
-		m_shadowDebugShader->initUniformVariable("near_plane");
-		m_shadowDebugShader->initUniformVariable("far_plane");
-
-		quadVao.bind();
-		quadVbo.setBufferData(6, quadVertices);
-		quadVbo.bind();
-		quadIbo.SetBufferData(6, indices);
-		quadIbo.Bind();
-		quadVao.initVertexArray();
-		quadVao.unbind();
-		quadIbo.Unbind();
-		quadVbo.unbind();
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, depthMap);
-
-		glViewport(0, 0, m_screenWidth, m_screenHeight);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		m_shadowDebugShader->useProgram();
-		m_shadowDebugShader->setUniform("near_plane", NEAR_PLANE);
-		m_shadowDebugShader->setUniform("far_plane", 1000.f);
-		m_shadowDebugShader->setUniform("depthMap", 0);
-		quadVao.bind();
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
-		quadVao.unbind();
-		m_shadowDebugShader->unuseProgram();*/
 	}
 }

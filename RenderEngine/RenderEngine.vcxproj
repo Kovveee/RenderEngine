@@ -92,9 +92,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\RenderEngine\Renderer\CameraControllerBase.h" />
-    <ClInclude Include="src\RenderEngine\Renderer\ShadowBox.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Skybox.h" />
-    <ClInclude Include="src\RenderEngine\Renderer\GameCamera.h" />
     <ClInclude Include="src\RenderEngine\Event\Event.h" />
     <ClInclude Include="src\RenderEngine\Event\InputEvents.h" />
     <ClInclude Include="src\RenderEngine\Event\WindowEvents.h" />
@@ -107,7 +105,7 @@
     <ClInclude Include="src\RenderEngine\Renderer\DirectionalLight.h" />
     <ClInclude Include="src\RenderEngine\Renderer\LightSource.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Model.h" />
-    <ClInclude Include="src\RenderEngine\Renderer\EditorCamera.h" />
+    <ClInclude Include="src\RenderEngine\Renderer\EditorCameraController.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Shader.h" />
     <ClInclude Include="src\RenderEngine\Renderer\ElementBuffer.h" />
     <ClInclude Include="src\RenderEngine\Renderer\Renderer.h" />
@@ -134,15 +132,13 @@
     <ClInclude Include="src\RenderEngine\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\RenderEngine\Renderer\ShadowBox.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Skybox.cpp" />
-    <ClCompile Include="src\RenderEngine\Renderer\GameCamera.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\EditorGUI.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Collider.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\PointLight.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\DirectionalLight.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Model.cpp" />
-    <ClCompile Include="src\RenderEngine\Renderer\EditorCamera.cpp" />
+    <ClCompile Include="src\RenderEngine\Renderer\EditorCameraController.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Shader.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\ElementBuffer.cpp" />
     <ClCompile Include="src\RenderEngine\Renderer\Renderer.cpp" />

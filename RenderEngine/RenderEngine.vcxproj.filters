@@ -45,7 +45,7 @@
     <ClInclude Include="src\RenderEngine\Renderer\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RenderEngine\Renderer\EditorCamera.h">
+    <ClInclude Include="src\RenderEngine\Renderer\EditorCameraController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\IMGUI\imgui_impl_opengl3_loader.h">
@@ -123,16 +123,10 @@
     <ClInclude Include="src\RenderEngine\WindowInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RenderEngine\Renderer\GameCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RenderEngine\Renderer\Skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\RenderEngine\Renderer\UniformBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RenderEngine\Renderer\ShadowBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\RenderEngine\Renderer\CameraControllerBase.h">
@@ -158,7 +152,7 @@
     <ClCompile Include="src\RenderEngine\Renderer\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RenderEngine\Renderer\EditorCamera.cpp">
+    <ClCompile Include="src\RenderEngine\Renderer\EditorCameraController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendor\IMGUI\imgui.cpp">
@@ -209,16 +203,10 @@
     <ClCompile Include="src\RenderEngine\WindowInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RenderEngine\Renderer\GameCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\RenderEngine\Renderer\Skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RenderEngine\Renderer\UniformBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RenderEngine\Renderer\ShadowBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendor\dds_loader\src\dds_loader.cpp">

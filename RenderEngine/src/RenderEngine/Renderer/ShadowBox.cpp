@@ -1,6 +1,6 @@
 #include "ShadowBox.h"
 
-ShadowBox::ShadowBox(EditorCamera& camera, glm::mat4 lightViewMatrix, float screenWidth, float screenHeight) 
+ShadowBox::ShadowBox(EditorCameraController& camera, glm::mat4 lightViewMatrix, float screenWidth, float screenHeight) 
 	: m_camera(camera), m_lightViewMatrix(lightViewMatrix), m_screenWidth(screenWidth), m_screenHeight(screenHeight) {}
 
 void ShadowBox::Update(){

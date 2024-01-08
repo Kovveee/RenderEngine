@@ -1,7 +1,7 @@
-#include "EditorCamera.h"
+#include "EditorCameraController.h"
 
-EditorCamera::EditorCamera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp):
-	Camera(cameraPos,cameraFront, cameraUp)
+EditorCameraController::EditorCameraController()
+	: CameraControllerBase()
 {
 	m_lastX = 0;
 	m_lastY = 0;
@@ -9,8 +9,9 @@ EditorCamera::EditorCamera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3
 	m_pitch = 0.f;
 	m_speed = 2.5f;
 	m_sensitivity = 0.05f;
+	m_firstMove = true;
 }
-void EditorCamera::Update(GLFWwindow* window, float deltaTime)
+void EditorCameraController::Update(GLFWwindow* window, float deltaTime, glm::vec3 &cameraPos, glm::vec3 &cameraFront, glm::vec3 &cameraUp)
 {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
 	{
@@ -42,24 +43,24 @@ void EditorCamera::Update(GLFWwindow* window, float deltaTime)
 		direction.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 		direction.y = sin(glm::radians(m_pitch));
 		direction.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-		m_cameraFront = glm::normalize(direction);
+		cameraFront = glm::normalize(direction);
 
 
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
-			m_cameraPos += m_speed * deltaTime * m_cameraFront;
+			cameraPos += m_speed * deltaTime * cameraFront;
 		}
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			m_cameraPos -= m_speed * deltaTime * m_cameraFront;
+			cameraPos -= m_speed * deltaTime * cameraFront;
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		{
-			m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_speed * deltaTime;
+			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * m_speed * deltaTime;
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		{
-			m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_speed * deltaTime;
+			cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * m_speed * deltaTime;
 		}
 	}
 	else {

@@ -27,9 +27,8 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "LightSource.h"
-#include "EditorCamera.h"
+#include "EditorCameraController.h"
 #include "EditorGUI.h"
-#include "GameCamera.h"
 #include "Skybox.h"
 #include "UniformBuffer.h"
 #include "ShadowBox.h"
@@ -90,7 +89,7 @@ namespace RenderEngine
 		int m_screenWidth;
 		int m_screenHeight;
 
-		EditorCamera* camera;
+		Camera* camera;
 
 		glm::mat4 m_projection = glm::perspective(glm::radians(45.f), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 150.f);
 
@@ -112,7 +111,6 @@ namespace RenderEngine
 		void SetLightUBO();
 		void SetViewProjUBO();
 
-		void InitShadowMap();
 		void GenerateShadowMap();
 		void RenderShadowMap();
 	};

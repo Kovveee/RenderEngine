@@ -5,14 +5,13 @@
 #include <glm/gtx/transform2.hpp>
 
 #include "Camera.h"
-#include "EditorCamera.h"
 
 #include <vector>
 
 class ShadowBox
 {
 public:
-	ShadowBox(EditorCamera& camera, glm::mat4 lightViewMatrix, float screenWidth, float screenHeight);
+	ShadowBox(EditorCameraController& camera, glm::mat4 lightViewMatrix, float screenWidth, float screenHeight);
 	
 	void Update();
 	glm::vec3 getCenter();
@@ -29,7 +28,7 @@ private:
 	float m_screenWidth;
 	float m_screenHeight;
 
-	EditorCamera m_camera;
+	EditorCameraController m_camera;
 
 	glm::mat4 m_lightViewMatrix;
 
